@@ -14,7 +14,7 @@ Lexer::Lexer(std::string& program) {
 
         std::cout << "L: " << t.line_number << std::endl;
         std::cout << "V: " << t.value << std::endl;
-        std::cout << "T: " << t.type << std::endl;
+        std::cout << "T: " << t.get_tk_type_as_string() << std::endl;
     }
 }
 
@@ -67,7 +67,7 @@ Token Lexer::next_token(std::string &program, unsigned int &current_index) {
     if(current_index == program.length()){
         lexeme = (char) EOF;
         current_index++;
-        return Token(eof_int, lexeme, get_source_line_number(program, current_index));
+        return Token(100, lexeme, get_source_line_number(program, current_index));
     }
 
     while(current_state != e){
@@ -75,7 +75,7 @@ Token Lexer::next_token(std::string &program, unsigned int &current_index) {
         lexeme += current_symbol;
        
         bool is_final_value = in_final_state[current_state];
-        std::cout << "is_final_value " << is_final_value << std::endl;
+        //std::cout << "is_final_value " << is_final_value << std::endl;
 
         if (is_final_value)
             while(!state_stack.empty())
@@ -85,7 +85,7 @@ Token Lexer::next_token(std::string &program, unsigned int &current_index) {
 
         current_state = transition(current_state, current_symbol);
 
-        std::cout << "transition_value " << current_state << std::endl;
+        //std::cout << "transition_value " << current_state << std::endl;
 
         current_index++;
     }

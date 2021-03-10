@@ -15,8 +15,6 @@ namespace core::lexer {
         OTHER           = 3  
     };
 
-    const unsigned int eof_int = 100;
-
     class Lexer {
 
         public:
@@ -25,7 +23,7 @@ namespace core::lexer {
             Token next_token();
 
             /**
-             * Default destructor.
+             * Default deconstructor.
              */
             ~Lexer();
         private:
@@ -33,6 +31,7 @@ namespace core::lexer {
 
             const bool in_final_state[6] = { 0,  1,  1 };
 
+            /* EOF 100 */
             const unsigned int transitions[4][5] = {
                 /* T_DIGIT          */ {   1,  e,  e,  e,  e },
                 /* T_ADDITIVE_OP    */ {   2,  e,  e,  e,  e },

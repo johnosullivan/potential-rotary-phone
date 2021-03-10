@@ -23,6 +23,8 @@ namespace core::lexer {
             std::string value;
             unsigned int line_number;
 
+            /* debugging tools */
+            std::string get_tk_type_as_string();
         private:
             TOKEN token_type(int, std::string&);
     };
