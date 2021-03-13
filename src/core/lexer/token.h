@@ -6,16 +6,16 @@
 namespace core::lexer {
 
     enum TOKEN {
-        TK_INT,                   
-        TK_ADDITIVE_OP, 
-        TK_MULTIPLICATIVE_OP, 
-        TK_RELATIONAL_OP,  
-        TK_ERROR,  
-        TK_EOF 
+        TK_INT = 0,                   
+        TK_ADDITIVE_OP = 1, 
+        TK_MULTIPLICATIVE_OP = 2, 
+        TK_RELATIONAL_OP = 3,  
+        TK_ERROR = 4,  
+        TK_EOF = 5,
+        TK_INT_TYPE = 6,
     };
 
     class Token {
-
         public:
             Token();
             Token(int, std::string, unsigned int line_number = 0);

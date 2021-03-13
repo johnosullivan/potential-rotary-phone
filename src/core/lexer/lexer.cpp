@@ -15,6 +15,9 @@ Lexer::Lexer(std::string& program) {
         std::cout << "L: " << t.line_number << std::endl;
         std::cout << "V: " << t.value << std::endl;
         std::cout << "T: " << t.get_tk_type_as_string() << std::endl;
+        std::cout << "TV: " << t.type << std::endl;
+
+        tokens.push_back(t);
     }
 }
 
@@ -26,7 +29,7 @@ Token Lexer::next_token() {
     }
 }
 
-int Lexer::transition(int s, char sigma) {
+int Lexer::find_transition(int s, char sigma) {
     switch(sigma){
         case '0':
         case '1':
@@ -52,20 +55,20 @@ int Lexer::transition(int s, char sigma) {
 
 Token Lexer::next_token(std::string &program, unsigned int &current_index) {
     int current_state = 0;
-    std::stack<int> state_stack;
+    std::stack<int> stack;
     char current_symbol;
     std::string lexeme;
 
-    state_stack.push(-1);
+    stack.push(-1);
 
-    std::cout << "=========================================================" << std::endl;
+    std::cout << "====================================" << std::endl;
 
-    while(current_index < program.length() &&
-          (program[current_index] == ' ' || program[current_index] == '\n'))
+    while(current_index < program.length() && (program[current_index] == ' ' || program[current_index] == '\n')) {
         current_index++;
+    }
 
     if(current_index == program.length()){
-        lexeme = (char) EOF;
+        lexeme = (char)EOF;
         current_index++;
         return Token(100, lexeme, get_source_line_number(program, current_index));
     }
@@ -78,12 +81,12 @@ Token Lexer::next_token(std::string &program, unsigned int &current_index) {
         //std::cout << "is_final_value " << is_final_value << std::endl;
 
         if (is_final_value)
-            while(!state_stack.empty())
-                state_stack.pop();
+            while(!stack.empty())
+                stack.pop();
 
-        state_stack.push(current_state);
+        stack.push(current_state);
 
-        current_state = transition(current_state, current_symbol);
+        current_state = find_transition(current_state, current_symbol);
 
         //std::cout << "transition_value " << current_state << std::endl;
 
@@ -91,8 +94,8 @@ Token Lexer::next_token(std::string &program, unsigned int &current_index) {
     }
 
     while(!in_final_state[current_state] && current_state != -1){
-        current_state = state_stack.top();
-        state_stack.pop();
+        current_state = stack.top();
+        stack.pop();
         lexeme.pop_back();
         current_index--;
     }

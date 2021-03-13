@@ -8,4 +8,13 @@ add_executable(mylang
 
         src/core/lexer/lexer.cpp
         src/core/lexer/token.cpp
+
+        src/core/parser/parser.cpp
+        src/core/parser/ast.cpp
+
+        src/core/parser/astvisitor.cpp
+
+        src/core/parser/interpreter.cpp
+
+        src/compiler/compiler.cpp
 )
