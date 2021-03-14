@@ -34,9 +34,8 @@ void Compiler::visit(parser::ASTBinaryExprNode *bin) {
 
     bin -> right -> accept(this);
     parser::TYPE r_type = current_expression_type;
-    value_t r_value = current_expression_value;
+    value_t r_value = current_expression_value;  
 
-    
     
 }
 
