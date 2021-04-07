@@ -22,6 +22,7 @@ namespace core::parser {
 
             // Statement Nodes
             ASTStatementNode*             parse_statement();
+            ASTDeclarationNode*           parse_declaration_statement();
 
             // Expression Nodes
             ASTExprNode*               parse_simple_expression();

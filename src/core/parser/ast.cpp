@@ -18,6 +18,21 @@ ASTBinaryExprNode::ASTBinaryExprNode(std::string op, ASTExprNode *left, ASTExprN
         code_line_number(line_number)
 {}
 
+// Statement Nodes
+ASTDeclarationNode::ASTDeclarationNode(TYPE type, std::string identifier, ASTExprNode *expr,
+                                       unsigned int line_number) :
+    type(type),
+    identifier(std::move(identifier)),
+    expr(expr),
+    line_number(line_number)
+{}
+
+ASTIdentifierNode::ASTIdentifierNode(std::string identifier, unsigned int line_number) :
+        identifier(std::move(identifier)),
+        line_number(line_number)
+{}
+
+
 // Accept functions for visitors
 void ASTBinaryExprNode::accept(visitor::Visitor *v){
     v -> visit(this);
@@ -32,5 +47,13 @@ namespace core::parser {
 }
 
 void ASTProgramNode::accept(visitor::Visitor *v){
+    v -> visit(this);
+}
+
+void ASTDeclarationNode::accept(visitor::Visitor *v){
+    v -> visit(this);
+}
+
+void ASTIdentifierNode::accept(visitor::Visitor *v){
     v -> visit(this);
 }

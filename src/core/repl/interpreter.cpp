@@ -3,8 +3,32 @@
 
 using namespace core::visitor;
 
-Interpreter::Interpreter(){
-    
+bool IScope::already_declared(std::string identifier) {
+    return variable_symbol_table.find(identifier) != variable_symbol_table.end();
+}
+
+void IScope::declare(std::string identifier, int int_value) {
+    value_t value;
+    value.i = int_value;
+    variable_symbol_table[identifier] = std::make_pair(parser::INT, value);
+}
+
+core::parser::TYPE IScope::type_of(std::string identifier) {
+    return variable_symbol_table[identifier].first;
+}
+
+value_t IScope::value_of(std::string identifier) {
+    return variable_symbol_table[identifier].second;
+}
+
+
+
+Interpreter::Interpreter(IScope* global_scope) {
+    scopes.push_back(global_scope);
+}
+
+Interpreter::Interpreter(){ 
+    scopes.push_back(new IScope());
 }
 
 Interpreter::~Interpreter() = default;
@@ -35,6 +59,8 @@ void Interpreter::visit(parser::ASTBinaryExprNode *bin) {
 
     value_t v;
 
+    //std::cout << "ASTBinaryExprNode: " << v.i <<std::endl;
+
     if(op == "+" || op == "-") {
         if(l_type == parser::INT && r_type == parser::INT){
             current_expression_type = parser::INT;
@@ -50,10 +76,28 @@ void Interpreter::visit(parser::ASTBinaryExprNode *bin) {
 }
 
 std::pair<core::parser::TYPE, value_t> Interpreter::current_expr(){
-    return std::move(std::make_pair(current_expression_type,
-                                    current_expression_value));
+    return std::move(std::make_pair(current_expression_type, current_expression_value));
 };
 
+void Interpreter::visit(parser::ASTDeclarationNode *decl) { 
+    decl -> expr -> accept(this);
+
+    switch(decl -> type){
+        case parser::INT:
+            scopes.back()->declare(decl->identifier, current_expression_value.i);
+            break;
+    }
+}
+
+void Interpreter::visit(parser::ASTIdentifierNode *id) {
+    //std::cout << "ASTIdentifierNode" << std::endl;
+
+    unsigned long i;
+    for (i = scopes.size() - 1; !scopes[i] -> already_declared(id->identifier); i--);
+
+    current_expression_type = scopes[i] -> type_of(id->identifier);
+    current_expression_value = scopes[i] -> value_of(id->identifier);
+}
 
 std::string type_str(core::parser::TYPE t) {
 

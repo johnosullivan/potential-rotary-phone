@@ -3,7 +3,8 @@
 
 #include <string>
 #include <vector>
-#include "visitor.h"
+
+#include "../../common/visitor.h"
 
 namespace core::parser {
 
@@ -34,11 +35,29 @@ namespace core::parser {
         void accept(visitor::Visitor*) override;
     };
 
+    class ASTDeclarationNode : public ASTStatementNode {
+    public:
+        ASTDeclarationNode(TYPE, std::string, ASTExprNode*, unsigned int);
+        TYPE type;
+        std::string identifier;
+        ASTExprNode *expr;
+        unsigned int line_number;
+        void accept(visitor::Visitor*) override;
+    };
+
+    class ASTIdentifierNode : public ASTExprNode {
+    public:
+        explicit ASTIdentifierNode(std::string, unsigned int);
+        std::string identifier;
+        unsigned int line_number;
+        void accept(visitor::Visitor*) override;
+    };
+
     // Expression Nodes
     template <typename T>
     class ASTLiteralNode : public ASTExprNode {
     public:
-        ASTLiteralNode(T val, unsigned int line_number) : val(val), code_line_number(code_line_number) {};
+        ASTLiteralNode(T val, unsigned int code_line_number) : val(val), code_line_number(code_line_number) {};
         T val;
         unsigned int code_line_number;
         void accept(visitor::Visitor*) override;

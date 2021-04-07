@@ -3,7 +3,7 @@
 
 #include <fstream>
 
-#include "../core/parser/visitor.h"
+#include "../common/visitor.h"
 #include "../core/parser/ast.h"
 
 namespace core::compiler {
@@ -21,6 +21,9 @@ namespace core::compiler {
             void visit(parser::ASTProgramNode*) override;
             void visit(parser::ASTLiteralNode<int>*) override;
             void visit(parser::ASTBinaryExprNode*) override;
+
+            void visit(parser::ASTDeclarationNode*) override;
+            void visit(parser::ASTIdentifierNode*) override;
         private:
             parser::TYPE current_expression_type;
             COMPILER_ARCH_TYPE arch_type;

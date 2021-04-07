@@ -18,7 +18,7 @@ std::string ASTVisitor::indentation() {
 }
 
 void ASTVisitor::visit(parser::ASTProgramNode *program) {
-    std::cout << "<exec>" << std::endl;
+    std::cout << "<program>" << std::endl;
 
     indentation_level++;
 
@@ -27,8 +27,30 @@ void ASTVisitor::visit(parser::ASTProgramNode *program) {
 
     indentation_level--;
 
+    std::cout << "</program>" << std::endl;
+}
 
-    std::cout << "</exec>" << std::endl;
+void ASTVisitor::visit(parser::ASTDeclarationNode *decl) {
+    std::cout << indentation() << "<declaration>" << std::endl;
+
+    indentation_level++;
+
+    std::cout << indentation() << "<id type = \"" + type_str(decl -> type) + "\">"
+                             << decl -> identifier << "</id>" << std::endl;
+
+    decl -> expr -> accept(this);
+
+    indentation_level--;
+
+    std::cout << indentation() << "</declaration>" << std::endl;
+}
+
+void ASTVisitor::visit(parser::ASTIdentifierNode *id) {
+    std::cout << indentation() << "<id>";
+
+    std::cout << id -> identifier;
+
+    std::cout << "</id>" << std::endl;
 }
 
 void ASTVisitor::visit(parser::ASTLiteralNode<int> *lit) {

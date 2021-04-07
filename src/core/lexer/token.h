@@ -13,6 +13,26 @@ namespace core::lexer {
         TK_ERROR = 4,  
         TK_EOF = 5,
         TK_INT_TYPE = 6,
+        TK_VAR = 7,
+        TK_IDENTIFIER = 8,
+        TK_COLON = 9,
+        TK_SEMICOLON = 10,
+        TK_EQUALS = 11,
+    };
+
+    static const char *ENUM_STR[] = {
+        "TK_INT",                   
+        "TK_ADDITIVE_OP", 
+        "TK_MULTIPLICATIVE_OP", 
+        "TK_RELATIONAL_OP",  
+        "TK_ERROR",  
+        "TK_EOF",
+        "TK_INT_TYPE",
+        "TK_VAR",
+        "TK_IDENTIFIER",
+        "TK_COLON",
+        "TK_SEMICOLON",
+        "TK_EQUALS"
     };
 
     class Token {

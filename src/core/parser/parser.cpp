@@ -9,8 +9,8 @@ Parser::Parser(lexer::Lexer* lex) : lexer(lex) {
     current_token = lex->next_token();
     next_token    = lex->next_token();
 
-    ////std::cout << "current_token = " << current_token.value << std::endl;
-    ////std::cout << "next_token = " << next_token.value << std::endl;
+    //std::cout << "current_token = " << current_token.value << std::endl;
+    //std::cout << "next_token = " << next_token.value << std::endl;
 }
 
 Parser::Parser(lexer::Lexer* lex, unsigned int tokens) : lexer(lex) {
@@ -27,13 +27,12 @@ void Parser::consume_token() {
 }
 
 ASTProgramNode* Parser::parse_program() {
-    auto statements = new std::vector<ASTNode*>;
+    //std::cout << "parse_program" << std::endl;
 
-    //std::cout << "parse_program " << std::endl;
+    auto statements = new std::vector<ASTNode*>;
 
     while(current_token.type != lexer::TK_EOF){
         auto statement = parse_statement();
-        //std::cout << "statement = " << statement << std::endl;
         statements->push_back(statement);
         consume_token();
     }
@@ -41,11 +40,56 @@ ASTProgramNode* Parser::parse_program() {
     return new ASTProgramNode(*statements);
 }
 
+ASTDeclarationNode* Parser::parse_declaration_statement() {
+    //std::cout << "parse_declaration_statement" << std::endl;
+
+    // Node attributes
+    TYPE type;
+    std::string identifier;
+    ASTExprNode* expr;
+    unsigned int line_number;
+
+    // Determine line number
+    line_number = current_token.line_number;
+
+    // Consume identifier
+    consume_token();
+    if(current_token.type != lexer::TK_IDENTIFIER)
+        throw std::runtime_error("expected variable name after 'var' on line "
+                                 + std::to_string(current_token.line_number) + ".");
+    identifier = current_token.value;
+
+    consume_token();
+    if(current_token.type != lexer::TK_COLON)
+        throw std::runtime_error("expected ':' after " + identifier + " on line "
+                                 + std::to_string(current_token.line_number) + ".");
+
+    consume_token();
+    type = parse_type(identifier);
+
+    consume_token();
+    if(current_token.type != lexer::TK_EQUALS)
+        throw std::runtime_error("expected assignment operator '=' for " + identifier + " on line "
+                                 + std::to_string(current_token.line_number) + ".");
+
+    // Parse the right hand side
+    expr = parse_expression();
+
+    consume_token();
+    if(current_token.type != lexer::TK_SEMICOLON)
+        throw std::runtime_error("Expected ';' after assignment of " + identifier + " on line "
+                                 + std::to_string(current_token.line_number) + ".");
+
+    // Create ASTExpressionNode to return
+    return new ASTDeclarationNode(type, identifier, expr, line_number);
+}
+
 ASTStatementNode* Parser::parse_statement() {
-    ////std::cout << current_token.value << std::endl;
-    ////std::cout << current_token.type << std::endl;
+    //std::cout << "parse_statement" << std::endl;
 
     switch(current_token.type){
+        case lexer::TK_VAR:
+            return parse_declaration_statement();
         default:
             throw std::runtime_error("Invalid statement starting with '" +
                                      current_token.value
@@ -55,7 +99,8 @@ ASTStatementNode* Parser::parse_statement() {
 }
 
 ASTExprNode* Parser::parse_simple_expression() {
-    //////std::cout << "parse_simple_expression_current_token.type " << current_token.type << std::endl;
+    //std::cout << "parse_simple_expression" << std::endl;
+    //std::cout << "consume_token: " << current_token.value << std::endl;
 
     ASTExprNode *term = parse_term();
     unsigned int line_number = current_token.line_number;
@@ -69,27 +114,34 @@ ASTExprNode* Parser::parse_simple_expression() {
 }
 
 ASTExprNode* Parser::parse_term() {
+    //std::cout << "parse_term" << std::endl;
+
     ASTExprNode *factor = parse_factor();
     unsigned int line_number = current_token.line_number;
+
 
 
     return factor;
 }
 
 ASTExprNode* Parser::parse_factor() {
+    //std::cout << "parse_factor" << std::endl;
+
     consume_token();
+
+    //std::cout << "parse_factor_current_token_value " << current_token.value << std::endl;
 
     // Determine line number
     unsigned int line_number = current_token.line_number;
-
-    //////std::cout << "parse_factor_current_token.type " << current_token.type << std::endl;
 
     switch(current_token.type){
         // Literal Cases
         case lexer::TK_INT:
             return new ASTLiteralNode<int>(std::stoi(current_token.value), line_number);
+        case lexer::TK_IDENTIFIER:
+            return new ASTIdentifierNode(current_token.value, line_number);
         default:
-            throw std::runtime_error("Expected expression on line "
+            throw std::runtime_error("expected expression on line "
                                      + std::to_string(current_token.line_number) + ".");
 
     }
@@ -97,6 +149,8 @@ ASTExprNode* Parser::parse_factor() {
 }
 
 ASTExprNode* Parser::parse_expression() {
+    //std::cout << "parse_expression" << std::endl;
+
     ASTExprNode *simple_expr = parse_simple_expression();
     unsigned int line_number = current_token.line_number;
 
@@ -108,7 +162,7 @@ TYPE Parser::parse_type(std::string& identifier) {
         case lexer::TK_INT_TYPE:
             return INT;
         default:
-            throw std::runtime_error("Expected type for " + identifier + " after ':' on line "
+            throw std::runtime_error("expected type for " + identifier + " after ':' on line "
                                      + std::to_string(current_token.line_number) + ".");
     }
 }

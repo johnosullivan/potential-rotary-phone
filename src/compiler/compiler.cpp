@@ -5,8 +5,6 @@
 using namespace core::compiler;
 using namespace core::visitor;
 
-#define MULTILINE(...) #__VA_ARGS__
-
 Compiler::Compiler(COMPILER_ARCH_TYPE arch_type) {
     arch_type = arch_type;
     asm_source = "";
@@ -34,9 +32,15 @@ void Compiler::visit(parser::ASTBinaryExprNode *bin) {
 
     bin -> right -> accept(this);
     parser::TYPE r_type = current_expression_type;
-    value_t r_value = current_expression_value;  
+    value_t r_value = current_expression_value;    
+}
 
-    
+void Compiler::visit(parser::ASTDeclarationNode *decl) { 
+
+}
+
+void Compiler::visit(parser::ASTIdentifierNode *id) {
+
 }
 
 Compiler::~Compiler(){}

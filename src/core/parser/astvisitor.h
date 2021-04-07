@@ -2,8 +2,10 @@
 #define AST_VISITOR_H
 
 #include <fstream>
-#include "visitor.h"
-#include "../parser/ast.h"
+
+#include "../../common/visitor.h"
+
+#include "ast.h"
 
 namespace core::visitor {
 
@@ -17,6 +19,8 @@ namespace core::visitor {
         void visit(parser::ASTLiteralNode<int>*) override;
         void visit(parser::ASTBinaryExprNode*) override;
 
+        void visit(parser::ASTDeclarationNode*) override;
+        void visit(parser::ASTIdentifierNode*) override;
     private:
         unsigned int indentation_level;
         const std::string TAB = "    ";
