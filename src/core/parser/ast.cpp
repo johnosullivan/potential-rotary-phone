@@ -10,17 +10,21 @@ ASTProgramNode::ASTProgramNode(std::vector<ASTNode*> statements) :
 {}
 
 // Expression Nodes
-ASTBinaryExprNode::ASTBinaryExprNode(std::string op, ASTExprNode *left, ASTExprNode *right,
-                                     unsigned int line_number) :
+ASTBinaryExprNode::ASTBinaryExprNode(std::string op, ASTExprNode *left, ASTExprNode *right, unsigned int line_number) :
         op(std::move(op)),
         left(left),
         right(right),
         code_line_number(line_number)
 {}
 
+ASTAssignmentNode::ASTAssignmentNode(std::string identifier, ASTExprNode *expr, unsigned int line_number) :
+        identifier(std::move(identifier)),
+        expr(expr),
+        line_number(line_number)
+{}
+
 // Statement Nodes
-ASTDeclarationNode::ASTDeclarationNode(TYPE type, std::string identifier, ASTExprNode *expr,
-                                       unsigned int line_number) :
+ASTDeclarationNode::ASTDeclarationNode(TYPE type, std::string identifier, ASTExprNode *expr, unsigned int line_number) :
     type(type),
     identifier(std::move(identifier)),
     expr(expr),
@@ -55,5 +59,9 @@ void ASTDeclarationNode::accept(visitor::Visitor *v){
 }
 
 void ASTIdentifierNode::accept(visitor::Visitor *v){
+    v -> visit(this);
+}
+
+void ASTAssignmentNode::accept(visitor::Visitor *v){
     v -> visit(this);
 }

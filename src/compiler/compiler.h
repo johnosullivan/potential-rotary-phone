@@ -5,6 +5,7 @@
 
 #include "../common/visitor.h"
 #include "../core/parser/ast.h"
+#include "../core/repl/interpreter.h"
 
 namespace core::compiler {
     enum COMPILER_ARCH_TYPE {
@@ -24,6 +25,8 @@ namespace core::compiler {
 
             void visit(parser::ASTDeclarationNode*) override;
             void visit(parser::ASTIdentifierNode*) override;
+
+            void visit(parser::ASTAssignmentNode*) override;
         private:
             parser::TYPE current_expression_type;
             COMPILER_ARCH_TYPE arch_type;
@@ -32,6 +35,8 @@ namespace core::compiler {
             // asm code for cli nasm
             std::string asm_source; 
             std::vector<std::string> asm_commands;
+
+            std::vector<core::visitor::Scope*> scopes;
     };
 
 }

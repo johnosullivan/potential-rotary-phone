@@ -3,32 +3,31 @@
 
 using namespace core::visitor;
 
-bool IScope::already_declared(std::string identifier) {
+bool Scope::already_declared(std::string identifier) {
     return variable_symbol_table.find(identifier) != variable_symbol_table.end();
 }
 
-void IScope::declare(std::string identifier, int int_value) {
+void Scope::declare(std::string identifier, int int_value) {
     value_t value;
     value.i = int_value;
     variable_symbol_table[identifier] = std::make_pair(parser::INT, value);
 }
 
-core::parser::TYPE IScope::type_of(std::string identifier) {
+core::parser::TYPE Scope::type_of(std::string identifier) {
     return variable_symbol_table[identifier].first;
 }
 
-value_t IScope::value_of(std::string identifier) {
+value_t Scope::value_of(std::string identifier) {
     return variable_symbol_table[identifier].second;
 }
 
 
-
-Interpreter::Interpreter(IScope* global_scope) {
+Interpreter::Interpreter(Scope* global_scope) {
     scopes.push_back(global_scope);
 }
 
 Interpreter::Interpreter(){ 
-    scopes.push_back(new IScope());
+    scopes.push_back(new Scope());
 }
 
 Interpreter::~Interpreter() = default;
@@ -44,6 +43,19 @@ void Interpreter::visit(parser::ASTLiteralNode<int> *lit) {
     v.i = lit->val;
     current_expression_type = parser::INT;
     current_expression_value = std::move(v);
+}
+
+void Interpreter::visit(parser::ASTAssignmentNode *assign) {
+    unsigned long i;
+    for (i = scopes.size() - 1; !scopes[i] -> already_declared(assign->identifier); i--);
+
+    assign -> expr -> accept(this);
+
+    switch(scopes[i]->type_of(assign->identifier)){
+        case parser::INT:
+            scopes[i]->declare(assign->identifier, current_expression_value.i);
+            break;
+    }
 }
 
 void Interpreter::visit(parser::ASTBinaryExprNode *bin) {

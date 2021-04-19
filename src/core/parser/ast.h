@@ -35,6 +35,15 @@ namespace core::parser {
         void accept(visitor::Visitor*) override;
     };
 
+    class ASTAssignmentNode : public ASTStatementNode {
+    public:
+        ASTAssignmentNode(std::string, ASTExprNode*, unsigned int);
+        std::string identifier;
+        ASTExprNode *expr;
+        unsigned int line_number;
+        void accept(visitor::Visitor*) override;
+    };
+
     class ASTDeclarationNode : public ASTStatementNode {
     public:
         ASTDeclarationNode(TYPE, std::string, ASTExprNode*, unsigned int);

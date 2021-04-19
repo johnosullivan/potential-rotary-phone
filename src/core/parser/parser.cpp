@@ -90,6 +90,8 @@ ASTStatementNode* Parser::parse_statement() {
     switch(current_token.type){
         case lexer::TK_VAR:
             return parse_declaration_statement();
+        case lexer::TK_IDENTIFIER:
+            return parse_assignment_statement();
         default:
             throw std::runtime_error("Invalid statement starting with '" +
                                      current_token.value
@@ -146,6 +148,30 @@ ASTExprNode* Parser::parse_factor() {
 
     }
 
+}
+
+ASTAssignmentNode* Parser::parse_assignment_statement() {
+    // Node attributes
+    std::string identifier;
+    ASTExprNode* expr;
+
+    unsigned int line_number = current_token.line_number;
+    identifier = current_token.value;
+
+    consume_token();
+    if(current_token.type != lexer::TK_EQUALS)
+        throw std::runtime_error("Expected assignment operator '=' after " + identifier + " on line "
+                                 + std::to_string(current_token.line_number) + ".");
+
+    // Parse the right hand side
+    expr = parse_expression();
+
+    consume_token();
+    if(current_token.type != lexer::TK_SEMICOLON)
+        throw std::runtime_error("Expected ';' after assignment of " + identifier + " on line "
+                                 + std::to_string(current_token.line_number) + ".");
+
+    return new ASTAssignmentNode(identifier, expr, line_number);
 }
 
 ASTExprNode* Parser::parse_expression() {

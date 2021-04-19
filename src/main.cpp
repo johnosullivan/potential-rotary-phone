@@ -15,13 +15,13 @@
 
 #include "compiler/compiler.h"
 /*
-    var x:int = 5; var y:int = 9; var z:int = x + y;
+    var x:int = 0; var y:int = 0; x = 10; y = 20; var z:int = x + y;
 */
 
 int main(int argc, char* argv[]) {
     std::string source;
 
-    core::visitor::IScope global_scope;
+    core::visitor::Scope global_scope;
 
     // check if a source file is defined
     if(argc == 2) {
@@ -79,6 +79,10 @@ int main(int argc, char* argv[]) {
                 std::cout << "\n>>> _\b";
                 std::getline(std::cin, source);
 
+                if(source == "") {
+                    continue;
+                }
+
                 if(source == ".q") {
                     break;
                 } else {
@@ -118,7 +122,7 @@ int main(int argc, char* argv[]) {
                     auto current = interpreter.current_expr();
                     switch(current.first){
                         case core::parser::INT:
-                            std::cout << current.second.i;
+                            std::cout << current.second.i << std::endl;
                             break;
                     }
 
@@ -127,6 +131,7 @@ int main(int argc, char* argv[]) {
 
                     // clear IDLE commandline
                     source = "";
+                    input_line = "";
                 }
             }
     }

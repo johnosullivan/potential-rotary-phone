@@ -9,8 +9,7 @@
 #include "../parser/ast.h"
 
 namespace core::visitor {
-
-    class IScope {
+    class Scope {
         public:
 
         bool already_declared(std::string);
@@ -32,15 +31,19 @@ namespace core::visitor {
     class Interpreter : public Visitor {
     public:
         Interpreter();
-        Interpreter(IScope*);
+        Interpreter(Scope*);
         ~Interpreter();
 
         void visit(parser::ASTProgramNode*) override;
+
         void visit(parser::ASTLiteralNode<int>*) override;
+
         void visit(parser::ASTBinaryExprNode*) override;
 
         void visit(parser::ASTDeclarationNode*) override;
         void visit(parser::ASTIdentifierNode*) override;
+
+        void visit(parser::ASTAssignmentNode*) override;
 
         std::pair<parser::TYPE, value_t> current_expr();
 
@@ -48,7 +51,7 @@ namespace core::visitor {
         parser::TYPE current_expression_type;
         value_t current_expression_value;
 
-        std::vector<IScope*> scopes;
+        std::vector<Scope*> scopes;
     };
 
     std::string type_str(parser::TYPE);
