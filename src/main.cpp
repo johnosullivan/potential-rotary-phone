@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
                 prog = parser.parse_program();
             } catch(const std::exception &e) {
                 std::cout << "error 1: " << e.what() << std::endl;
-                        
+
                 try {
                     core::lexer::Lexer expr_lexerz(source);
                     core::parser::Parser parserz = core::parser::Parser(&expr_lexerz, 0);
@@ -90,14 +90,14 @@ int main(int argc, char* argv[]) {
 
                     core::parser::ASTProgramNode *prog;
 
-                    core::lexer::Lexer expr_lexer(source);
+                    core::lexer::Lexer expr_lexer(source);   
                     core::parser::Parser parser = core::parser::Parser(&expr_lexer);
 
                     try {
                         prog = parser.parse_program();
                     } catch(const std::exception &e) {
                         //std::cout << "error 1: " << e.what() << std::endl;
-                        
+
                         try {
                             core::lexer::Lexer expr_lexerz(source);
                             core::parser::Parser parserz = core::parser::Parser(&expr_lexerz, 0);
@@ -112,7 +112,7 @@ int main(int argc, char* argv[]) {
 
                     //std::cout << "====================================" << std::endl;
 
-                    /* Debugger AST */ 
+                    /* Debugger AST */
                     /*core::visitor::ASTVisitor ast_visitor;
                     ast_visitor.visit(prog);*/
 
@@ -126,8 +126,8 @@ int main(int argc, char* argv[]) {
                             break;
                     }
 
-                    core::compiler::Compiler compiler(core::compiler::ARCH_X86_64);
-                    compiler.visit(prog);
+                    //core::compiler::Compiler compiler(core::compiler::ARCH_X86_64);
+                    //compiler.visit(prog);
 
                     // clear IDLE commandline
                     source = "";
