@@ -45,6 +45,10 @@ void ASTVisitor::visit(parser::ASTDeclarationNode *decl) {
     std::cout << indentation() << "</declaration>" << std::endl;
 }
 
+void ASTVisitor::visit(parser::ASTAssignmentNode *assign) {
+
+}
+
 void ASTVisitor::visit(parser::ASTIdentifierNode *id) {
     std::cout << indentation() << "<id>";
 

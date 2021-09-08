@@ -113,8 +113,8 @@ int main(int argc, char* argv[]) {
                     //std::cout << "====================================" << std::endl;
 
                     /* Debugger AST */
-                    /*core::visitor::ASTVisitor ast_visitor;
-                    ast_visitor.visit(prog);*/
+                    core::visitor::ASTVisitor ast_visitor;
+                    ast_visitor.visit(prog);
 
                     core::visitor::Interpreter interpreter(&global_scope);
                     interpreter.visit(prog);
@@ -126,8 +126,8 @@ int main(int argc, char* argv[]) {
                             break;
                     }
 
-                    //core::compiler::Compiler compiler(core::compiler::ARCH_X86_64);
-                    //compiler.visit(prog);
+                    /*core::compiler::Compiler compiler(core::compiler::ARCH_X86_64);
+                    compiler.visit(prog);*/
 
                     // clear IDLE commandline
                     source = "";
