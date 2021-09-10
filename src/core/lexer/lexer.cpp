@@ -75,8 +75,6 @@ Token Lexer::next_token(std::string &program, unsigned int &current_index) {
 
     stack.push(-1);
 
-    //std::cout << "====================================" << std::endl;
-
     while(current_index < program.length() && (program[current_index] == ' ' || program[current_index] == '\n')) {
         current_index++;
     }
@@ -92,15 +90,12 @@ Token Lexer::next_token(std::string &program, unsigned int &current_index) {
         lexeme += current_symbol;
        
         bool is_final_value = in_final_state[current_state];
-        //std::cout << "is_final_value " << is_final_value << std::endl;
 
         if (is_final_value) {
             while(!stack.empty()) {
                 stack.pop();
             }
         }
-
-        //std::cout << "push_current_state " << current_state << std::endl;
 
         stack.push(current_state);
 
