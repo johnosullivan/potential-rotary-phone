@@ -13,7 +13,7 @@ Token::Token(int final_state, std::string value, unsigned int line_number):
 TOKEN Token::token_type(int final_state, std::string &value) {
     /* EOF 100 */
 
-    //std::cout << final_state << std::endl;
+    std::cout << "Final State:" << final_state << std::endl;
 
     switch(final_state) {
         case 1:

@@ -93,7 +93,7 @@ int main(int argc, char* argv[]) {
                     core::lexer::Lexer expr_lexer(source);   
                     core::parser::Parser parser = core::parser::Parser(&expr_lexer);
 
-                    try {
+                    /*try {
                         prog = parser.parse_program();
                     } catch(const std::exception &e) {
                         //std::cout << "error 1: " << e.what() << std::endl;
@@ -108,7 +108,7 @@ int main(int argc, char* argv[]) {
                         } catch(const std::exception &expr_e) {
                             //std::cout << "error 2: " << expr_e.what() << std::endl;
                         }
-                    }
+                    }*/
 
                     //std::cout << "====================================" << std::endl;
 

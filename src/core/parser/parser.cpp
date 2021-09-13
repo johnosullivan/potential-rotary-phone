@@ -75,10 +75,10 @@ ASTDeclarationNode* Parser::parse_declaration_statement() {
     // Parse the right hand side
     expr = parse_expression();
 
-    consume_token();
+    /*consume_token();
     if(current_token.type != lexer::TK_SEMICOLON)
         throw std::runtime_error("Expected ';' after assignment of " + identifier + " on line "
-                                 + std::to_string(current_token.line_number) + ".");
+                                 + std::to_string(current_token.line_number) + ".");*/
 
     // Create ASTExpressionNode to return
     return new ASTDeclarationNode(type, identifier, expr, line_number);
