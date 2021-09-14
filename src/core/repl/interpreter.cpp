@@ -45,6 +45,13 @@ void Interpreter::visit(parser::ASTLiteralNode<int> *lit) {
     current_expression_value = std::move(v);
 }
 
+void Interpreter::visit(parser::ASTLiteralNode<float> *lit) {
+    value_t v;
+    v.f = lit->val;
+    current_expression_type = parser::FLOAT;
+    current_expression_value = std::move(v);
+}
+
 void Interpreter::visit(parser::ASTAssignmentNode *assign) {
     unsigned long i;
     for (i = scopes.size() - 1; !scopes[i] -> already_declared(assign->identifier); i--);
@@ -70,9 +77,7 @@ void Interpreter::visit(parser::ASTBinaryExprNode *bin) {
     value_t r_value = current_expression_value;
 
     value_t v;
-
-    //std::cout << "ASTBinaryExprNode: " << v.i <<std::endl;
-
+    
     if(op == "+" || op == "-") {
         if(l_type == parser::INT && r_type == parser::INT){
             current_expression_type = parser::INT;
@@ -80,6 +85,22 @@ void Interpreter::visit(parser::ASTBinaryExprNode *bin) {
                 v.i = l_value.i + r_value.i;
             } else if(op == "-") {
                 v.i = l_value.i - r_value.i;
+            }
+        }
+        if(l_type == parser::FLOAT && r_type == parser::INT){
+            current_expression_type = parser::FLOAT;
+            if(op == "+") {
+                v.f = l_value.f + r_value.i;
+            } else if(op == "-") {
+                v.f = l_value.f - r_value.i;
+            }
+        }
+        if(l_type == parser::INT && r_type == parser::FLOAT){
+            current_expression_type = parser::FLOAT;
+            if(op == "+") {
+                v.f = l_value.i + r_value.f;
+            } else if(op == "-") {
+                v.f = l_value.i - r_value.f;
             }
         }
     }

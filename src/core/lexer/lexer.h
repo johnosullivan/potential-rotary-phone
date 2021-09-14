@@ -16,6 +16,7 @@ namespace core::lexer {
         LETTER          = 4,
         EQUALS          = 5,  
         PUNCTUATION     = 6,
+        FLOAT           = 7,
     };
 
     class Lexer {
@@ -34,14 +35,14 @@ namespace core::lexer {
             */
             const unsigned int e = 94;
             
-            const bool in_final_state[8] = { 0, 1,  1, 0, 1, 1, 1, 0 };
+            const bool in_final_state[8] = { 0, 1,  1, 0, 1, 1, 1, 1 };
 
             /* 
                 EOF 100 
                 https://en.wikipedia.org/wiki/Finite-state_machine
             */
             const unsigned int transitions[8][8] = {
-                /* 0 T_DIGIT          */ {   1,  1,  e,  e,  e, e, e, 1 },
+                /* 0 T_DIGIT          */ {   1,  1,  e,  e,  e, e, e, 7 },
                 /* 1 T_ADDITIVE_OP    */ {   2,  e,  e,  e,  e, e, e, e },
                 /* 2 T_END_OF_FILE    */ {   e,  e,  e,  e,  e, e, e, e },
                 /* 3 T_OTHER          */ {   e,  e,  e,  e,  e, e, e, e },

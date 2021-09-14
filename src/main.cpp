@@ -70,6 +70,9 @@ int main(int argc, char* argv[]) {
                 case core::parser::INT:
                     std::cout << current.second.i << std::endl;
                     break;
+                case core::parser::FLOAT:
+                    std::cout << current.second.f << std::endl;
+                    break;
             }
 
     } else {
@@ -93,7 +96,7 @@ int main(int argc, char* argv[]) {
                     core::lexer::Lexer expr_lexer(source);   
                     core::parser::Parser parser = core::parser::Parser(&expr_lexer);
 
-                    /*try {
+                    try {
                         prog = parser.parse_program();
                     } catch(const std::exception &e) {
                         //std::cout << "error 1: " << e.what() << std::endl;
@@ -108,7 +111,7 @@ int main(int argc, char* argv[]) {
                         } catch(const std::exception &expr_e) {
                             //std::cout << "error 2: " << expr_e.what() << std::endl;
                         }
-                    }*/
+                    }
 
                     //std::cout << "====================================" << std::endl;
 
@@ -123,6 +126,9 @@ int main(int argc, char* argv[]) {
                     switch(current.first){
                         case core::parser::INT:
                             std::cout << current.second.i << std::endl;
+                            break;
+                        case core::parser::FLOAT:
+                            std::cout << current.second.f << std::endl;
                             break;
                     }
 

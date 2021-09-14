@@ -140,6 +140,8 @@ ASTExprNode* Parser::parse_factor() {
         // Literal Cases
         case lexer::TK_INT:
             return new ASTLiteralNode<int>(std::stoi(current_token.value), line_number);
+        case lexer::TK_FLOAT:
+            return new ASTLiteralNode<float>(std::stof(current_token.value), line_number);
         case lexer::TK_IDENTIFIER:
             return new ASTIdentifierNode(current_token.value, line_number);
         default:
@@ -187,6 +189,8 @@ TYPE Parser::parse_type(std::string& identifier) {
     switch(current_token.type){
         case lexer::TK_INT_TYPE:
             return INT;
+        case lexer::TK_FLOAT_TYPE:
+            return FLOAT;
         default:
             throw std::runtime_error("expected type for " + identifier + " after ':' on line "
                                      + std::to_string(current_token.line_number) + ".");

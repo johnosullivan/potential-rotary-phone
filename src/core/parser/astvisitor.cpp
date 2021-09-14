@@ -61,6 +61,10 @@ void ASTVisitor::visit(parser::ASTLiteralNode<int> *lit) {
     std::cout << indentation()  << "<int>" << std::to_string(lit->val) << "</int>" << std::endl;
 }
 
+void ASTVisitor::visit(parser::ASTLiteralNode<float> *lit) {
+    std::cout << indentation()  << "<float>" << std::to_string(lit->val) << "</float>" << std::endl;
+}
+
 void ASTVisitor::visit(parser::ASTBinaryExprNode *bin) {
     std::cout << indentation() << "<bin op = \"" + safe_op(bin->op) +
                                 "\">" << std::endl;
@@ -81,6 +85,8 @@ std::string ASTVisitor::type_str(parser::TYPE t) {
     switch(t) {
         case parser::INT:
             return "int";
+        case parser::FLOAT:
+            return "float";
         default:
             throw std::runtime_error("invalid type encountered in syntax tree");
     }

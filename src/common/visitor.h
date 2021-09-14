@@ -27,7 +27,10 @@ namespace core::visitor {
     class Visitor {
         public:
             virtual void visit(parser::ASTProgramNode*) = 0;
+
             virtual void visit(parser::ASTLiteralNode<int>*) = 0;
+            virtual void visit(parser::ASTLiteralNode<float>*) = 0;
+            
             virtual void visit(parser::ASTBinaryExprNode*) = 0;
             virtual void visit(parser::ASTDeclarationNode*) = 0;
             virtual void visit(parser::ASTIdentifierNode*) = 0;

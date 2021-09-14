@@ -32,7 +32,7 @@ Token Lexer::next_token() {
 
 int Lexer::find_transition(int state, char symbol) {
 
-    std::cout << "state: " << state << " symbol: " << symbol << std::endl;
+    //std::cout << "state: " << state << " symbol: " << symbol << std::endl;
 
     switch(symbol){
         case '0':
@@ -45,20 +45,20 @@ int Lexer::find_transition(int state, char symbol) {
         case '7':
         case '8':
         case '9': {
-            std::cout << "DIGIT -> " << state << std::endl;
+            //std::cout << "DIGIT -> " << state << std::endl;
             return transitions[DIGIT][state];
         }
         case '+':
         case '-':
             return transitions[ADDITIVE_OP][state];
         case '=': {
-            std::cout << "EQUALS -> " << state << std::endl;
+            //std::cout << "EQUALS -> " << state << std::endl;
             return transitions[EQUALS][state];
         }
         case ':':
         case ';':
         case '.': {
-            std::cout << "PUNCTUATION -> " << state << std::endl;
+            //std::cout << "PUNCTUATION -> " << state << std::endl;
             return transitions[PUNCTUATION][state];
         }
         case EOF:
@@ -67,7 +67,7 @@ int Lexer::find_transition(int state, char symbol) {
             auto ascii = (int)symbol;
 
             if (((0x41 <= ascii) && (ascii <= 0x5A)) || ((0x61 <= ascii) && (ascii <= 0x7A))) {
-                std::cout << "LETTER -> " << state << std::endl;
+                //std::cout << "LETTER -> " << state << std::endl;
                 return transitions[LETTER][state];
             }
 

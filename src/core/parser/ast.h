@@ -9,7 +9,7 @@
 namespace core::parser {
 
     // Types
-    enum TYPE {INT};
+    enum TYPE {INT,FLOAT};
 
     // Abstract Syntax Tree Nodes
     class ASTNode {
