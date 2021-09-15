@@ -71,6 +71,7 @@ int Lexer::find_transition(int state, char symbol) {
                 return transitions[LETTER][state];
             }
 
+            //std::cout << "OTHER -> " << state << std::endl;
             return transitions[OTHER][state];
     }
 }

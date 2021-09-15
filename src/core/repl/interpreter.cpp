@@ -52,6 +52,13 @@ void Interpreter::visit(parser::ASTLiteralNode<float> *lit) {
     current_expression_value = std::move(v);
 }
 
+void Interpreter::visit(parser::ASTLiteralNode<std::string> *lit) {
+    value_t v;
+    v.s = lit->val;
+    current_expression_type = parser::STRING;
+    current_expression_value = std::move(v);
+}
+
 void Interpreter::visit(parser::ASTAssignmentNode *assign) {
     unsigned long i;
     for (i = scopes.size() - 1; !scopes[i] -> already_declared(assign->identifier); i--);
@@ -77,7 +84,7 @@ void Interpreter::visit(parser::ASTBinaryExprNode *bin) {
     value_t r_value = current_expression_value;
 
     value_t v;
-    
+
     if(op == "+" || op == "-") {
         if(l_type == parser::INT && r_type == parser::INT){
             current_expression_type = parser::INT;

@@ -37,6 +37,8 @@ TOKEN Token::token_type(int final_state, std::string &value) {
                 return TK_SEMICOLON;
         case 7:
             return TK_FLOAT;
+        case 8:
+            return TK_STRING;
         case 100:
             return TK_EOF;
         default:

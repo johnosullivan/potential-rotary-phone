@@ -19,6 +19,7 @@ namespace core::visitor {
 
         void visit(parser::ASTLiteralNode<int>*) override;
         void visit(parser::ASTLiteralNode<float>*) override;
+        void visit(parser::ASTLiteralNode<std::string>*) override;
 
         void visit(parser::ASTBinaryExprNode*) override;
 

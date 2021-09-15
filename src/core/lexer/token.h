@@ -20,6 +20,8 @@ namespace core::lexer {
         TK_EQUALS = 11,
         TK_FLOAT_TYPE = 12,
         TK_FLOAT = 13,
+        TK_STRING_TYPE = 14,
+        TK_STRING = 15,
     };
 
     static const char *ENUM_STR[] = {
@@ -37,6 +39,8 @@ namespace core::lexer {
         "TK_EQUALS",
         "TK_FLOAT_TYPE",
         "TK_FLOAT",
+        "TK_STRING_TYPE",
+        "TK_STRING",
     };
 
     class Token {

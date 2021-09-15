@@ -142,6 +142,9 @@ ASTExprNode* Parser::parse_factor() {
             return new ASTLiteralNode<int>(std::stoi(current_token.value), line_number);
         case lexer::TK_FLOAT:
             return new ASTLiteralNode<float>(std::stof(current_token.value), line_number);
+        case lexer::TK_STRING: {
+            return new ASTLiteralNode<std::string>(current_token.value, line_number);
+        }
         case lexer::TK_IDENTIFIER:
             return new ASTIdentifierNode(current_token.value, line_number);
         default:

@@ -52,6 +52,10 @@ namespace core::parser {
     void ASTLiteralNode<float>::accept(visitor::Visitor *v) {
         v->visit(this);
     }
+    template<>
+    void ASTLiteralNode<std::string>::accept(visitor::Visitor *v) {
+        v->visit(this);
+    }
 }
 
 void ASTProgramNode::accept(visitor::Visitor *v){

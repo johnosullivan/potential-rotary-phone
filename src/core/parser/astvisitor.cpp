@@ -61,6 +61,10 @@ void ASTVisitor::visit(parser::ASTLiteralNode<int> *lit) {
     std::cout << indentation()  << "<int>" << std::to_string(lit->val) << "</int>" << std::endl;
 }
 
+void ASTVisitor::visit(parser::ASTLiteralNode<std::string> *lit) {
+    std::cout << indentation()  << "<string>" << lit->val << "</string>" << std::endl;
+}
+
 void ASTVisitor::visit(parser::ASTLiteralNode<float> *lit) {
     std::cout << indentation()  << "<float>" << std::to_string(lit->val) << "</float>" << std::endl;
 }

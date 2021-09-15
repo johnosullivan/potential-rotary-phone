@@ -35,21 +35,22 @@ namespace core::lexer {
             */
             const unsigned int e = 94;
             
-            const bool in_final_state[8] = { 0, 1,  1, 0, 1, 1, 1, 1 };
+            const bool in_final_state[9] = { 0, 1,  1, 0, 1, 1, 1, 1, 1 };
 
             /* 
                 EOF 100 
                 https://en.wikipedia.org/wiki/Finite-state_machine
             */
-            const unsigned int transitions[8][8] = {
-                /* 0 T_DIGIT          */ {   1,  1,  e,  e,  e, e, e, 7 },
-                /* 1 T_ADDITIVE_OP    */ {   2,  e,  e,  e,  e, e, e, e },
-                /* 2 T_END_OF_FILE    */ {   e,  e,  e,  e,  e, e, e, e },
-                /* 3 T_OTHER          */ {   e,  e,  e,  e,  e, e, e, e },
-                /* 4 T_LETTER         */ {   4,  e,  e,  e,  4, e, e, e },
-                /* 5 T_EQUALS         */ {   5,  e,  e,  e,  e, e, e, e },
-                /* 6 T_PUNCTUATION    */ {   6,  7,  e,  e,  e, e, 6, e },
-                /* 7 T_FLOAT          */ {   7,  7,  7,  e,  e, e, e, e },
+            const unsigned int transitions[9][9] = {
+                /* 0 T_DIGIT          */ {  1,  1,  e,  e,  e, e, e, 7, e },
+                /* 1 T_ADDITIVE_OP    */ {  2,  e,  e,  e,  e, e, e, e, e },
+                /* 2 T_END_OF_FILE    */ {  e,  e,  e,  e,  e, e, e, e, e },
+                /* 3 T_OTHER          */ {  3,  e,  3,  3,  8, e, e, e, e },
+                /* 4 T_LETTER         */ {  4,  e,  e,  4,  4, e, e, e, e },
+                /* 5 T_EQUALS         */ {  5,  e,  e,  e,  e, e, e, e, e },
+                /* 6 T_PUNCTUATION    */ {  6,  7,  e,  e,  6, e, 6, e, e },
+                /* 7 T_FLOAT          */ {  7,  7,  7,  e,  e, e, e, e, e },
+                /* 8 T_STRING         */ {  e,  e,  e,  e,  e, e, e, e, e }
             };
 
             unsigned int current_token = 0;
