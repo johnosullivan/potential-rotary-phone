@@ -10,6 +10,7 @@ Lexer::Lexer(std::string& program) {
 
     Token t;
     while(current_index <= program.length()) {
+        std::cout << "======================" << std::endl;
         t = next_token(program, current_index);
 
         //std::cout << "L: " << t.line_number << std::endl;
@@ -32,7 +33,7 @@ Token Lexer::next_token() {
 
 int Lexer::find_transition(int state, char symbol) {
 
-    //std::cout << "state: " << state << " symbol: " << symbol << std::endl;
+    std::cout << "| state: " << state << " symbol: " << symbol << std::endl;
 
     switch(symbol){
         case '0':
@@ -45,34 +46,53 @@ int Lexer::find_transition(int state, char symbol) {
         case '7':
         case '8':
         case '9': {
-            //std::cout << "DIGIT -> " << state << std::endl;
-            return transitions[DIGIT][state];
+            return transitions[TT_DIGIT][state];
         }
+        case '.':
+            return transitions[TT_PERIOD][state];
+        case '*':
+            return transitions[TT_ASTERISK][state];
         case '+':
         case '-':
-            return transitions[ADDITIVE_OP][state];
+            return transitions[TT_ADDITIVE_OP][state];
+        case '!':
+            return transitions[TT_EXCL_MARK][state];
+        case '>':
+        case '<':
+            return transitions[TT_ORDER_REL][state];
         case '=': {
-            //std::cout << "EQUALS -> " << state << std::endl;
-            return transitions[EQUALS][state];
+            return transitions[TT_EQUALS][state];
         }
         case ':':
         case ';':
-        case '.': {
-            //std::cout << "PUNCTUATION -> " << state << std::endl;
-            return transitions[PUNCTUATION][state];
+        case ',':
+        case '(':
+        case ')':
+        case '{':
+        case '}': {
+            return transitions[TT_PUNCTUATION][state];
         }
+        case '_':
+            return transitions[TT_UNDERSCORE][state];
+
+        case '/':
+            return transitions[TT_FORWARDSLASH][state];
+
+        case '\\':
+            return transitions[TT_BACKSLASH][state];
+
+        case '\"':
+            return transitions[TT_QUOTATION_MARK][state];
         case EOF:
-            return transitions[ENDOFFILE][state];
+            return transitions[TT_ENDOFFILE][state];
         default:
             auto ascii = (int)symbol;
 
             if (((0x41 <= ascii) && (ascii <= 0x5A)) || ((0x61 <= ascii) && (ascii <= 0x7A))) {
-                //std::cout << "LETTER -> " << state << std::endl;
-                return transitions[LETTER][state];
+                return transitions[TT_LETTER][state];
             }
 
-            //std::cout << "OTHER -> " << state << std::endl;
-            return transitions[OTHER][state];
+            return transitions[TT_OTHER][state];
     }
 }
 

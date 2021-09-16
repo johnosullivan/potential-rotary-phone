@@ -13,6 +13,12 @@ void Scope::declare(std::string identifier, int int_value) {
     variable_symbol_table[identifier] = std::make_pair(parser::INT, value);
 }
 
+void Scope::declare(std::string identifier, float float_value) {
+    value_t value;
+    value.f = float_value;
+    variable_symbol_table[identifier] = std::make_pair(parser::FLOAT, value);
+}
+
 core::parser::TYPE Scope::type_of(std::string identifier) {
     return variable_symbol_table[identifier].first;
 }
@@ -68,6 +74,9 @@ void Interpreter::visit(parser::ASTAssignmentNode *assign) {
     switch(scopes[i]->type_of(assign->identifier)){
         case parser::INT:
             scopes[i]->declare(assign->identifier, current_expression_value.i);
+            break;
+        case parser::FLOAT:
+            scopes[i]->declare(assign->identifier, current_expression_value.f);
             break;
     }
 }
@@ -126,6 +135,9 @@ void Interpreter::visit(parser::ASTDeclarationNode *decl) {
         case parser::INT:
             scopes.back()->declare(decl->identifier, current_expression_value.i);
             break;
+        case parser::FLOAT:
+            scopes.back()->declare(decl->identifier, current_expression_value.f);
+            break;
     }
 }
 
@@ -144,6 +156,8 @@ std::string type_str(core::parser::TYPE t) {
     switch(t){
         case core::parser::INT:
             return "int";
+        case core::parser::FLOAT:
+            return "float";
         default:
             throw std::runtime_error("invalid type encountered.");
     }

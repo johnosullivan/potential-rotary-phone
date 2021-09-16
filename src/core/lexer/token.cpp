@@ -13,14 +13,16 @@ Token::Token(int final_state, std::string value, unsigned int line_number):
 TOKEN Token::token_type(int final_state, std::string &value) {
     /* EOF 100 */
 
-    //std::cout << "Final State:" << final_state << std::endl;
+    std::cout << "| final State:" << final_state << " V '" << value << "'" << std::endl;
 
     switch(final_state) {
         case 1:
             return TK_INT;
-        case 2:
-            return TK_ADDITIVE_OP;
+        case 3:
+            return TK_FLOAT;
         case 4:
+            return TK_ADDITIVE_OP;
+        case 10:
             if(value == "var")
                 return TK_VAR;
             if(value == "int")
@@ -28,16 +30,14 @@ TOKEN Token::token_type(int final_state, std::string &value) {
             if(value == "float")
                 return TK_FLOAT_TYPE;
             else return TK_IDENTIFIER;
-        case 5:
+        case 8:
             return TK_EQUALS;
-        case 6:
+        case 21:
             if(value == ":")
                 return TK_COLON;
             if(value == ";")
                 return TK_SEMICOLON;
-        case 7:
-            return TK_FLOAT;
-        case 8:
+        case 20:
             return TK_STRING;
         case 100:
             return TK_EOF;

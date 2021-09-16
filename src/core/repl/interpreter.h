@@ -14,6 +14,7 @@ namespace core::visitor {
 
         bool already_declared(std::string);
         void declare(std::string, int);
+        void declare(std::string, float);
 
         parser::TYPE type_of(std::string);
         value_t value_of(std::string);

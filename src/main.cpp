@@ -73,6 +73,8 @@ int main(int argc, char* argv[]) {
                 case core::parser::FLOAT:
                     std::cout << current.second.f << std::endl;
                     break;
+                case core::parser::STRING:
+                    break;
             }
 
     } else {
@@ -129,6 +131,8 @@ int main(int argc, char* argv[]) {
                             break;
                         case core::parser::FLOAT:
                             std::cout << current.second.f << std::endl;
+                            break;
+                        case core::parser::STRING:
                             break;
                     }
 

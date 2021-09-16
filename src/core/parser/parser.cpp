@@ -1,4 +1,6 @@
 #include <iostream>
+#include <algorithm>
+
 #include "parser.h"
 
 using namespace core::parser;
@@ -143,6 +145,7 @@ ASTExprNode* Parser::parse_factor() {
         case lexer::TK_FLOAT:
             return new ASTLiteralNode<float>(std::stof(current_token.value), line_number);
         case lexer::TK_STRING: {
+            current_token.value.erase(std::remove(current_token.value.begin(), current_token.value.end(), '"'), current_token.value.end());
             return new ASTLiteralNode<std::string>(current_token.value, line_number);
         }
         case lexer::TK_IDENTIFIER:
