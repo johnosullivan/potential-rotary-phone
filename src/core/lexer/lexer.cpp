@@ -14,10 +14,10 @@ Lexer::Lexer(std::string& program) {
         t = next_token(program, current_index);
 
         //std::cout << "L: " << t.line_number << std::endl;
-        
+        std::cout << "----------------------" << std::endl;
         std::cout << "V: " << t.value << std::endl;
         std::cout << "T: " << t.get_tk_type_as_string() << std::endl;
-        std::cout << "======================" << std::endl;
+        //std::cout << "======================" << std::endl;
 
         tokens.push_back(t);
     }
@@ -31,9 +31,9 @@ Token Lexer::next_token() {
     }
 }
 
-int Lexer::find_transition(int state, char symbol) {
-
-    std::cout << "| state: " << state << " symbol: " << symbol << std::endl;
+int Lexer::find_transition(int steps, int state, char symbol) {
+    
+    std::cout << steps << ") start_state => " << state << " symbol => '" << symbol;
 
     switch(symbol){
         case '0':
@@ -46,22 +46,41 @@ int Lexer::find_transition(int state, char symbol) {
         case '7':
         case '8':
         case '9': {
-            return transitions[TT_DIGIT][state];
+            int result = transitions[TT_DIGIT][state];
+            std::cout << "' result_state = " << result << std::endl;
+            return result;
         }
-        case '.':
-            return transitions[TT_PERIOD][state];
-        case '*':
-            return transitions[TT_ASTERISK][state];
+        case '.': {
+            int result = transitions[TT_PERIOD][state];
+            std::cout << "' result_state = " << result << std::endl;
+            return result;
+        }
+        case '*': {
+            int result = transitions[TT_ASTERISK][state];
+            std::cout << "' result_state = " << result << std::endl;
+            return result;
+        }
         case '+':
-        case '-':
-            return transitions[TT_ADDITIVE_OP][state];
-        case '!':
-            return transitions[TT_EXCL_MARK][state];
+        case '-': {
+            int result = transitions[TT_ADDITIVE_OP][state];
+            std::cout << "' result_state = " << result << std::endl;
+            return result;
+        }
+        case '!': {
+            int result = transitions[TT_EXCL_MARK][state];
+            std::cout << "' result_state = " << result << std::endl;
+            return result;
+        }
         case '>':
-        case '<':
-            return transitions[TT_ORDER_REL][state];
+        case '<': {
+            int result = transitions[TT_ORDER_REL][state];
+            std::cout << "' result_state = " << result << std::endl;
+            return result;
+        }
         case '=': {
-            return transitions[TT_EQUALS][state];
+            int result = transitions[TT_EQUALS][state];
+            std::cout << "' result_state = " << result << std::endl;
+            return result;
         }
         case ':':
         case ';':
@@ -70,29 +89,48 @@ int Lexer::find_transition(int state, char symbol) {
         case ')':
         case '{':
         case '}': {
-            return transitions[TT_PUNCTUATION][state];
+            int result = transitions[TT_PUNCTUATION][state];
+            std::cout << "' result_state = " << result << std::endl;
+            return result;
         }
-        case '_':
-            return transitions[TT_UNDERSCORE][state];
-
-        case '/':
-            return transitions[TT_FORWARDSLASH][state];
-
-        case '\\':
-            return transitions[TT_BACKSLASH][state];
-
-        case '\"':
-            return transitions[TT_QUOTATION_MARK][state];
-        case EOF:
-            return transitions[TT_ENDOFFILE][state];
-        default:
+        case '_': {
+            int result = transitions[TT_UNDERSCORE][state];
+            std::cout << "' result_state = " << result << std::endl;
+            return result;
+        }
+        case '/': {
+            int result = transitions[TT_FORWARDSLASH][state];
+            std::cout << "' result_state = " << result << std::endl;
+            return result;
+        }
+        case '\\': {
+            int result = transitions[TT_BACKSLASH][state];
+            std::cout << "' result_state = " << result << std::endl;
+            return result;
+        }
+        case '\"': {
+            int result = transitions[TT_QUOTATION_MARK][state];
+            std::cout << "' result_state = " << result << std::endl;
+            return result;
+        }
+        case EOF: {
+            int result = transitions[TT_ENDOFFILE][state];
+            std::cout << "' result_state = " << result << std::endl;
+            return result;
+        }
+        default: {
             auto ascii = (int)symbol;
 
             if (((0x41 <= ascii) && (ascii <= 0x5A)) || ((0x61 <= ascii) && (ascii <= 0x7A))) {
-                return transitions[TT_LETTER][state];
+                int result = transitions[TT_LETTER][state];
+                std::cout << "' result_state = " << result << std::endl;
+                return result;
             }
 
-            return transitions[TT_OTHER][state];
+            int result = transitions[TT_OTHER][state];
+            std::cout << "' result_state = " << result << std::endl;
+            return result;
+        }
     }
 }
 
@@ -114,6 +152,8 @@ Token Lexer::next_token(std::string &program, unsigned int &current_index) {
         return Token(100, lexeme, get_source_line_number(program, current_index));
     }
 
+    int steps = 1;
+
     while(current_state != e){
         current_symbol = program[current_index];
         lexeme += current_symbol;
@@ -128,8 +168,8 @@ Token Lexer::next_token(std::string &program, unsigned int &current_index) {
 
         stack.push(current_state);
 
-        current_state = find_transition(current_state, current_symbol);
-
+        current_state = find_transition(steps, current_state, current_symbol);
+        steps++;
         //std::cout << "current_symbol " << current_symbol << std::endl;
         //std::cout << "current_state " << current_state << std::endl;
 
@@ -146,9 +186,7 @@ Token Lexer::next_token(std::string &program, unsigned int &current_index) {
     if(current_state == -1)
         throw std::runtime_error("lexical error");
 
-
     if(in_final_state[current_state]) {
-        
         return Token(current_state, std::move(lexeme), get_source_line_number(program, current_index));
     } else {
         throw std::runtime_error("lexical error: line = " + std::to_string(get_source_line_number(program, current_index)) + ".");

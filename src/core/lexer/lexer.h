@@ -88,7 +88,7 @@ namespace core::lexer {
 
             std::vector<Token> tokens;
 
-            int find_transition(int, char);
+            int find_transition(int, int, char);
 
             Token next_token(std::string&, unsigned int&);
 
