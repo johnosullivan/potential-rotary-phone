@@ -25,6 +25,8 @@ TOKEN Token::token_type(int final_state, std::string &value) {
         case 10:
             if(value == "var")
                 return TK_VAR;
+            if(value == "val")
+                return TK_VAL_TYPE;
             if(value == "int")
                 return TK_INT_TYPE;
             if(value == "float")
