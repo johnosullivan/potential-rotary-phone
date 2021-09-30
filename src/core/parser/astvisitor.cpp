@@ -11,23 +11,25 @@ ASTVisitor::ASTVisitor() : indentation_level(0) {
 std::string ASTVisitor::indentation() {
     std::string tabs;
 
-    for(unsigned int i = 0; i < indentation_level; i++)
+    for(unsigned int i = 0; i < indentation_level; i++) {
         tabs += TAB;
+    }
 
     return tabs;
 }
 
 void ASTVisitor::visit(parser::ASTProgramNode *program) {
-    std::cout << "<program>" << std::endl;
+    std::cout << "\n<program>" << std::endl;
 
     indentation_level++;
 
-    for(auto &statement : program -> statements)
+    for(auto &statement : program -> statements) {
         statement -> accept(this);
+    }
 
     indentation_level--;
 
-    std::cout << "</program>" << std::endl;
+    std::cout << "</program>\n" << std::endl;
 }
 
 void ASTVisitor::visit(parser::ASTDeclarationNode *decl) {
@@ -83,6 +85,18 @@ void ASTVisitor::visit(parser::ASTBinaryExprNode *bin) {
     indentation_level--;
 
     std::cout << indentation() << "</bin>" << std::endl;
+}
+
+void ASTVisitor::visit(parser::ASTStdOutNode *stdout){
+    std::cout << indentation() << "<stdout>" << std::endl;
+
+    indentation_level++;
+
+    stdout -> expr -> accept(this);
+
+    indentation_level--;
+
+    std::cout << indentation() << "</stdout>" << std::endl;
 }
 
 std::string ASTVisitor::type_str(parser::TYPE t) {

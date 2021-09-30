@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <regex>
+#include <ctime>
 
 #include <sstream>
 #include <filesystem>
@@ -14,18 +15,56 @@
 #include "core/repl/interpreter.h"
 
 #include "compiler/compiler.h"
-/*
-    var x:int = 0; var y:int = 0; x = 10; y = 20; var z:int = x + y;
-*/
+
+
+const std::string current_datetime() {
+    time_t     now = time(0);
+    struct tm  tstruct;
+    char       buf[80];
+    tstruct = *localtime(&now);
+    // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
+    // for more information about date/time format
+    strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+    return buf;
+}
 
 int main(int argc, char* argv[]) {
+    /* gets current time and converts to string */
+    time_t now = time(0);
+    tm *ltm = localtime(&now);
+
+    std::cout << "Facile (fx) Simple Programming, Version 0.0.0 (" << current_datetime() << ")." << std::endl;
+    std::cout << "Type \"help\", \"copyright\", \"credits\" or \"license\" for more information." << std::endl;
+
+    bool file_flag = false;
+    bool verbose_flag = false;
+
+    std::string file_path;
+    int verbose_level = 0;
+
+    for (int i = 1; i < argc; i++) {  
+        if (i + 1 != argc) {
+            if (strcmp(argv[i], "-f") == 0) {                 
+                file_path = argv[i + 1];
+                file_flag = true;
+                i++;
+            }
+            if (strcmp(argv[i], "-v") == 0) {                 
+                verbose_flag = true;
+                verbose_level = atoi(argv[i + 1]);
+                i++;
+            }
+            i++;
+        }
+    }
+
+
     std::string source;
 
     core::visitor::Scope global_scope;
 
     // check if a source file is defined
-    if(argc == 2) {
-            std::string file_path = argv[1];
+    if(file_flag) {
             file_path = std::regex_replace(file_path, std::regex("^ +| +$"), "$1");
 
             std::ifstream file;
@@ -75,6 +114,8 @@ int main(int argc, char* argv[]) {
                     break;
                 case core::parser::STRING:
                     break;
+                default:
+                    break;
             }
 
     } else {
@@ -118,8 +159,10 @@ int main(int argc, char* argv[]) {
                     //std::cout << "====================================" << std::endl;
 
                     /* Debugger AST */
-                    core::visitor::ASTVisitor ast_visitor;
-                    ast_visitor.visit(prog);
+                    if (verbose_flag) {
+                        core::visitor::ASTVisitor ast_visitor;
+                        ast_visitor.visit(prog);
+                    }
 
                     core::visitor::Interpreter interpreter(&global_scope);
                     interpreter.visit(prog);
@@ -133,6 +176,9 @@ int main(int argc, char* argv[]) {
                             std::cout << current.second.f << std::endl;
                             break;
                         case core::parser::STRING:
+                            std::cout << current.second.s << std::endl;
+                            break;
+                        default:
                             break;
                     }
 

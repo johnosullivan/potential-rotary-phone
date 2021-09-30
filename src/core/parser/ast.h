@@ -8,10 +8,15 @@
 
 namespace core::parser {
 
-    // Types
-    enum TYPE {INT,FLOAT,STRING};
+    // Return Types 
+    enum TYPE {
+        INT         = 0,
+        FLOAT       = 1,
+        STRING      = 2,
+        RES_NONE    = 4
+    };
 
-    // Abstract Syntax Tree Nodes
+    // Abstract Syntax Tree (AST) Nodes
     class ASTNode {
     public:
         virtual void accept(visitor::Visitor*) = 0;
@@ -79,6 +84,15 @@ namespace core::parser {
         ASTExprNode *left;
         ASTExprNode *right;
         unsigned int code_line_number;
+        void accept(visitor::Visitor*) override;
+    };
+
+    // Standard Output
+    class ASTStdOutNode : public ASTStatementNode {
+    public:
+        ASTStdOutNode(ASTExprNode*, unsigned int);
+        ASTExprNode *expr;
+        unsigned int line_number;
         void accept(visitor::Visitor*) override;
     };
 }

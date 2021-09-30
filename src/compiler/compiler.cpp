@@ -51,6 +51,8 @@ void Compiler::visit(parser::ASTAssignmentNode *assign) {
         case parser::INT:
             scopes[i]->declare(assign->identifier, current_expression_value.i);
             break;
+        default:
+            break;
     }
 }
 
@@ -60,6 +62,8 @@ void Compiler::visit(parser::ASTDeclarationNode *decl) {
     switch(decl -> type){
         case parser::INT:
             scopes.back()->declare(decl->identifier, current_expression_value.i);
+            break;
+        default:
             break;
     }
 }

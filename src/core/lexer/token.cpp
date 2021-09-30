@@ -13,7 +13,7 @@ Token::Token(int final_state, std::string value, unsigned int line_number):
 TOKEN Token::token_type(int final_state, std::string &value) {
     /* EOF 100 */
 
-    std::cout << "Done: " << final_state << " Value: '" << value << "'" << std::endl;
+    //std::cout << "Done: " << final_state << " Value: '" << value << "'" << std::endl;
 
     switch(final_state) {
         case 1:
@@ -23,15 +23,23 @@ TOKEN Token::token_type(int final_state, std::string &value) {
         case 4:
             return TK_ADDITIVE_OP;
         case 10:
-            if(value == "var")
+            if(value == "print") {
+                return TK_PRINT;
+            }
+            if(value == "var") {
                 return TK_VAR;
-            if(value == "val")
+            }
+            if(value == "val") {
                 return TK_VAL_TYPE;
-            if(value == "int")
+            }
+            if(value == "int") {
                 return TK_INT_TYPE;
-            if(value == "float")
+            }
+            if(value == "float") {
                 return TK_FLOAT_TYPE;
-            else return TK_IDENTIFIER;
+            } else { 
+                return TK_IDENTIFIER;
+            }
         case 8:
             return TK_EQUALS;
         case 21:
@@ -39,6 +47,14 @@ TOKEN Token::token_type(int final_state, std::string &value) {
                 return TK_COLON;
             if(value == ";")
                 return TK_SEMICOLON;
+            if(value == "{")
+                return TK_LEFT_CURLY;
+            if(value == "}")
+                return TK_RIGHT_CURLY;
+            if(value == "(")
+                return TK_LEFT_PARENTHESES;
+            if(value == ")")
+                return TK_RIGHT_PARENTHESES;
         case 20:
             return TK_STRING;
         case 100:

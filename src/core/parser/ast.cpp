@@ -36,14 +36,12 @@ ASTIdentifierNode::ASTIdentifierNode(std::string identifier, unsigned int line_n
         line_number(line_number)
 {}
 
-
-// Accept functions for visitors
-void ASTBinaryExprNode::accept(visitor::Visitor *v){
-    v -> visit(this);
-}
+ASTStdOutNode::ASTStdOutNode(ASTExprNode *expr, unsigned int line_number) :
+        expr(expr),
+        line_number(line_number)
+{}
 
 namespace core::parser {
-
     template<>
     void ASTLiteralNode<int>::accept(visitor::Visitor *v) {
         v->visit(this);
@@ -56,6 +54,10 @@ namespace core::parser {
     void ASTLiteralNode<std::string>::accept(visitor::Visitor *v) {
         v->visit(this);
     }
+}
+
+void ASTBinaryExprNode::accept(visitor::Visitor *v){
+    v -> visit(this);
 }
 
 void ASTProgramNode::accept(visitor::Visitor *v){
@@ -71,5 +73,9 @@ void ASTIdentifierNode::accept(visitor::Visitor *v){
 }
 
 void ASTAssignmentNode::accept(visitor::Visitor *v){
+    v -> visit(this);
+}
+
+void ASTStdOutNode::accept(visitor::Visitor *v){
     v -> visit(this);
 }

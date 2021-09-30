@@ -16,6 +16,7 @@ namespace core::visitor {
         ~ASTVisitor();
 
         void visit(parser::ASTProgramNode*) override;
+        void visit(parser::ASTStdOutNode*) override;
 
         void visit(parser::ASTLiteralNode<int>*) override;
         void visit(parser::ASTLiteralNode<float>*) override;

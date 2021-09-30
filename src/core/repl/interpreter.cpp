@@ -44,6 +44,26 @@ void Interpreter::visit(parser::ASTProgramNode *prog) {
     }
 }
 
+void Interpreter::visit(parser::ASTStdOutNode *stdout){
+    stdout -> expr -> accept(this);
+
+    switch(current_expression_type) {
+        case parser::INT:
+            std::cout << current_expression_value.i << std::endl;
+            break;
+        case parser::FLOAT:
+            std::cout << current_expression_value.f << std::endl;
+            break;
+        case parser::STRING:
+            std::cout << current_expression_value.s << std::endl;
+            break;
+        default:
+             break;
+    }
+
+    current_expression_type = parser::RES_NONE;
+}
+
 void Interpreter::visit(parser::ASTLiteralNode<int> *lit) {
     value_t v;
     v.i = lit->val;
@@ -77,6 +97,8 @@ void Interpreter::visit(parser::ASTAssignmentNode *assign) {
             break;
         case parser::FLOAT:
             scopes[i]->declare(assign->identifier, current_expression_value.f);
+            break;
+        default:
             break;
     }
 }
@@ -137,6 +159,8 @@ void Interpreter::visit(parser::ASTDeclarationNode *decl) {
             break;
         case parser::FLOAT:
             scopes.back()->declare(decl->identifier, current_expression_value.f);
+            break;
+        default:
             break;
     }
 }

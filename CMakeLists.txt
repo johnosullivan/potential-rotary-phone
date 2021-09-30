@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.8)
-project(mylang)
+project(facile)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(mylang
+add_executable(fx
         src/main.cpp
 
         src/core/lexer/lexer.cpp

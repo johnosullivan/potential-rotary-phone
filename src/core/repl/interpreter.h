@@ -48,6 +48,8 @@ namespace core::visitor {
 
         void visit(parser::ASTAssignmentNode*) override;
 
+        void visit(parser::ASTStdOutNode*) override;
+
         std::pair<parser::TYPE, value_t> current_expr();
 
     private:

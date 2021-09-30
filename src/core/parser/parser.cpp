@@ -92,6 +92,8 @@ ASTStatementNode* Parser::parse_statement() {
     switch(current_token.type){
         case lexer::TK_VAR:
             return parse_declaration_statement();
+        case lexer::TK_PRINT:
+            return parse_std_out_statement();
         case lexer::TK_IDENTIFIER:
             return parse_assignment_statement();
         default:
@@ -148,6 +150,14 @@ ASTExprNode* Parser::parse_factor() {
             current_token.value.erase(std::remove(current_token.value.begin(), current_token.value.end(), '"'), current_token.value.end());
             return new ASTLiteralNode<std::string>(current_token.value, line_number);
         }
+        case lexer::TK_LEFT_PARENTHESES: {
+            ASTExprNode *sub_expr = parse_expression();
+            consume_token();
+            if (current_token.type != lexer::TK_RIGHT_PARENTHESES) {
+                throw std::runtime_error("Expected ')' after expression on line " + std::to_string(current_token.line_number) + ".");
+            }
+            return sub_expr;
+        }
         case lexer::TK_IDENTIFIER:
             return new ASTIdentifierNode(current_token.value, line_number);
         default:
@@ -174,18 +184,24 @@ ASTAssignmentNode* Parser::parse_assignment_statement() {
     // Parse the right hand side
     expr = parse_expression();
 
-    consume_token();
-    if(current_token.type != lexer::TK_SEMICOLON)
-        throw std::runtime_error("Expected ';' after assignment of " + identifier + " on line "
-                                 + std::to_string(current_token.line_number) + ".");
-
     return new ASTAssignmentNode(identifier, expr, line_number);
+}
+
+ASTStdOutNode* Parser::parse_std_out_statement() {
+    //std::cout << "parse_std_out_statement" << std::endl;
+
+    unsigned int line_number = current_token.line_number;
+
+    ASTExprNode* expr = parse_expression();
+
+    return new ASTStdOutNode(expr, line_number);
 }
 
 ASTExprNode* Parser::parse_expression() {
     //std::cout << "parse_expression" << std::endl;
 
     ASTExprNode *simple_expr = parse_simple_expression();
+
     unsigned int line_number = current_token.line_number;
 
     return simple_expr;

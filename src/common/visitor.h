@@ -7,6 +7,8 @@ namespace core::parser {
     template <typename T> class ASTLiteralNode;
 
     class ASTProgramNode;
+    class ASTStdOutNode;
+
     class ASTBinaryExprNode;
     class ASTDeclarationNode;
     class ASTIdentifierNode;
@@ -27,7 +29,9 @@ namespace core::visitor {
     class Visitor {
         public:
             virtual void visit(parser::ASTProgramNode*) = 0;
+            virtual void visit(parser::ASTStdOutNode*) = 0;
 
+            /* literal node for int, float, string */
             virtual void visit(parser::ASTLiteralNode<int>*) = 0;
             virtual void visit(parser::ASTLiteralNode<float>*) = 0;
             virtual void visit(parser::ASTLiteralNode<std::string>*) = 0;

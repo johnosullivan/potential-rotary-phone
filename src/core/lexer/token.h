@@ -22,7 +22,14 @@ namespace core::lexer {
         TK_FLOAT = 13,
         TK_STRING_TYPE = 14,
         TK_STRING = 15,
-        TK_VAL_TYPE = 16
+        TK_VAL_TYPE = 16,
+
+        TK_LEFT_CURLY = 17,
+        TK_RIGHT_CURLY = 18,
+        TK_LEFT_PARENTHESES = 19,
+        TK_RIGHT_PARENTHESES = 20,
+
+        TK_PRINT = 21
     };
 
     static const char *ENUM_STR[] = {
@@ -42,7 +49,14 @@ namespace core::lexer {
         "TK_FLOAT",
         "TK_STRING_TYPE",
         "TK_STRING",
-        "TK_VAL_TYPE"
+
+        "TK_VAL_TYPE",
+        "TK_LEFT_CURLY",
+        "TK_RIGHT_CURLY",
+        "TK_LEFT_PARENTHESES",
+        "TK_RIGHT_PARENTHESES",
+        
+        "TK_PRINT"
     };
 
     class Token {

@@ -24,11 +24,12 @@ namespace core::parser {
             ASTStatementNode*             parse_statement();
             ASTDeclarationNode*           parse_declaration_statement();
             ASTAssignmentNode*            parse_assignment_statement();
+            ASTStdOutNode*                parse_std_out_statement();
 
             // Expression Nodes
-            ASTExprNode*               parse_simple_expression();
-            ASTExprNode*               parse_term();
-            ASTExprNode*               parse_factor();
+            ASTExprNode*                  parse_simple_expression();
+            ASTExprNode*                  parse_term();
+            ASTExprNode*                  parse_factor();
 
             // Parse Types and parameters
             TYPE parse_type(std::string&);
