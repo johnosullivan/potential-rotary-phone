@@ -28,6 +28,11 @@ namespace core::visitor {
         void visit(parser::ASTIdentifierNode*) override;
 
         void visit(parser::ASTAssignmentNode*) override;
+
+        void visit(parser::ASTFuncNode*) override;
+        void visit(parser::ASTBlockNode*) override;
+        void visit(parser::ASTReturnNode*) override;
+        void visit(parser::ASTExprFuncCallNode*) override;
     private:
         unsigned int indentation_level;
         const std::string TAB = "    ";

@@ -22,6 +22,7 @@ namespace core::parser {
 
             // Statement Nodes
             ASTStatementNode*             parse_statement();
+            ASTStatementNode*             parse_statement_function_call();
             ASTDeclarationNode*           parse_declaration_statement();
             ASTAssignmentNode*            parse_assignment_statement();
             ASTStdOutNode*                parse_std_out_statement();
@@ -31,8 +32,16 @@ namespace core::parser {
             ASTExprNode*                  parse_term();
             ASTExprNode*                  parse_factor();
 
+            // Function / Return 
+            ASTFuncNode*                  parse_func();
+            ASTBlockNode*                 parse_block();
+            ASTReturnNode*                parse_return();
+            ASTExprFuncCallNode*          parse_function_call();
+
             // Parse Types and parameters
             TYPE parse_type(std::string&);
+            std::pair<std::string, TYPE>* parse_param();
+            std::vector<ASTExprNode*> *parse_call_params();
     };
 
 }

@@ -14,6 +14,11 @@ namespace core::parser {
     class ASTIdentifierNode;
     
     class ASTAssignmentNode;
+
+    class ASTFuncNode;
+    class ASTBlockNode;
+    class ASTReturnNode;
+    class ASTExprFuncCallNode;
 }
 
 namespace core::visitor {
@@ -40,6 +45,12 @@ namespace core::visitor {
             virtual void visit(parser::ASTDeclarationNode*) = 0;
             virtual void visit(parser::ASTIdentifierNode*) = 0;
             virtual void visit(parser::ASTAssignmentNode*) = 0;
+
+            /* function define */
+            virtual void visit(parser::ASTFuncNode*) = 0;
+            virtual void visit(parser::ASTBlockNode*) = 0;
+            virtual void visit(parser::ASTReturnNode*) = 0;
+            virtual void visit(parser::ASTExprFuncCallNode*) = 0;
     };
 }
 

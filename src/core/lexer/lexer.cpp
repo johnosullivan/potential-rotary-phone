@@ -10,13 +10,13 @@ Lexer::Lexer(std::string& program) {
 
     Token t;
     while(current_index <= program.length()) {
-        //std::cout << "======================" << std::endl;
+        std::cout << "======================" << std::endl;
         t = next_token(program, current_index);
 
         //std::cout << "L: " << t.line_number << std::endl;
-        //std::cout << "----------------------" << std::endl;
-        //std::cout << "V: " << t.value << std::endl;
-        //std::cout << "T: " << t.get_tk_type_as_string() << std::endl;
+        std::cout << "----------------------" << std::endl;
+        std::cout << "V: " << t.value << std::endl;
+        std::cout << "T: " << t.get_tk_type_as_string() << std::endl;
         //std::cout << "======================" << std::endl;
 
         tokens.push_back(t);

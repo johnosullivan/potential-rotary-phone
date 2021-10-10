@@ -4,6 +4,28 @@
 
 using namespace core::parser;
 
+ASTFuncNode::ASTFuncNode(std::string identifier,
+                                                     std::vector<std::pair<std::string, TYPE>> parameters,
+                                                     TYPE type, ASTBlockNode* block, unsigned int line_number) :
+        identifier(std::move(identifier)),
+        parameters(std::move(parameters)),
+        type(type),
+        block(block),
+        line_number(line_number)
+{
+    // Generate signature
+    this->signature = std::vector<TYPE>();
+    for(auto param : this->parameters) {
+        variable_names.push_back(param.first);
+        signature.push_back(param.second);
+    }
+}
+
+ASTBlockNode::ASTBlockNode(std::vector<ASTStatementNode*> statements, unsigned int line_number) :
+        statements(std::move(statements)),
+        line_number(line_number)
+{}
+
 // Program Node
 ASTProgramNode::ASTProgramNode(std::vector<ASTNode*> statements) :
         statements(std::move(statements))
@@ -39,6 +61,18 @@ ASTIdentifierNode::ASTIdentifierNode(std::string identifier, unsigned int line_n
 ASTStdOutNode::ASTStdOutNode(ASTExprNode *expr, unsigned int line_number) :
         expr(expr),
         line_number(line_number)
+{}
+
+ASTReturnNode::ASTReturnNode(ASTExprNode *expr, unsigned int line_number) :
+        expr(expr),
+        line_number(line_number)
+{}
+
+ASTExprFuncCallNode::ASTExprFuncCallNode(std::string identifier, std::vector<ASTExprNode*> parameters,
+                                         unsigned int line_number) :
+    identifier(std::move(identifier)),
+    parameters(std::move(parameters)),
+    line_number(line_number)
 {}
 
 namespace core::parser {
@@ -77,5 +111,21 @@ void ASTAssignmentNode::accept(visitor::Visitor *v){
 }
 
 void ASTStdOutNode::accept(visitor::Visitor *v){
+    v -> visit(this);
+}
+
+void ASTBlockNode::accept(visitor::Visitor *v){
+    v -> visit(this);
+}
+
+void ASTFuncNode::accept(visitor::Visitor *v){
+    v -> visit(this);
+}
+
+void ASTReturnNode::accept(visitor::Visitor *v){
+    v -> visit(this);
+}
+
+void ASTExprFuncCallNode::accept(visitor::Visitor *v){
     v -> visit(this);
 }

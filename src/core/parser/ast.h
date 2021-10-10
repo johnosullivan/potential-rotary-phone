@@ -95,6 +95,45 @@ namespace core::parser {
         unsigned int line_number;
         void accept(visitor::Visitor*) override;
     };
+
+    class ASTFuncNode : public ASTStatementNode {
+    public:
+        ASTFuncNode(std::string, std::vector<std::pair<std::string, TYPE>>,
+                                  TYPE, ASTBlockNode*, unsigned int);
+        std::string identifier;
+        std::vector<std::pair<std::string, TYPE>> parameters;
+        std::vector<std::string> variable_names;
+        std::vector<TYPE> signature;
+        TYPE type;
+        ASTBlockNode* block;
+        unsigned int line_number;
+        void accept(visitor::Visitor*) override;
+    };
+
+    class ASTBlockNode : public ASTStatementNode {
+    public:
+        ASTBlockNode(std::vector<ASTStatementNode*>, unsigned int);
+        std::vector<ASTStatementNode*> statements;
+        unsigned int line_number;
+        void accept(visitor::Visitor*) override;
+    };
+
+    class ASTReturnNode : public ASTStatementNode {
+    public:
+        ASTReturnNode(ASTExprNode*, unsigned int);
+        ASTExprNode *expr;
+        unsigned int line_number;
+        void accept(visitor::Visitor*) override;
+    };
+
+    class ASTExprFuncCallNode : public ASTExprNode {
+    public:
+        ASTExprFuncCallNode(std::string, std::vector<ASTExprNode*>, unsigned int);
+        std::string identifier;
+        std::vector<ASTExprNode*> parameters;
+        unsigned int line_number;
+        void accept(visitor::Visitor*) override;
+    };
 }
 
 

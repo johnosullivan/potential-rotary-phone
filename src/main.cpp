@@ -33,9 +33,6 @@ int main(int argc, char* argv[]) {
     time_t now = time(0);
     tm *ltm = localtime(&now);
 
-    std::cout << "Facile (fx) Simple Programming, Version 0.0.0 (" << current_datetime() << ")." << std::endl;
-    std::cout << "Type \"help\", \"copyright\", \"credits\" or \"license\" for more information." << std::endl;
-
     bool file_flag = false;
     bool verbose_flag = false;
 
@@ -54,10 +51,13 @@ int main(int argc, char* argv[]) {
                 verbose_level = atoi(argv[i + 1]);
                 i++;
             }
-            i++;
         }
     }
 
+    if (!file_flag) {
+        std::cout << "Facile (fx) Simple Programming, Version 0.0.0 (" << current_datetime() << ")." << std::endl;
+        std::cout << "Type \"help\", \"copyright\", \"credits\" or \"license\" for more information." << std::endl;
+    }
 
     std::string source;
 
@@ -100,6 +100,12 @@ int main(int argc, char* argv[]) {
                 } catch(const std::exception &expr_e) {
                     std::cout << "error 2: " << expr_e.what() << std::endl;
                 }
+            }
+
+            /* Debugger AST */
+            if (verbose_flag) {
+                core::visitor::ASTVisitor ast_visitor;
+                ast_visitor.visit(prog);
             }
 
             core::visitor::Interpreter interpreter;

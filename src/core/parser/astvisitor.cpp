@@ -18,6 +18,90 @@ std::string ASTVisitor::indentation() {
     return tabs;
 }
 
+void ASTVisitor::visit(parser::ASTBlockNode *block) {
+    std::cout << indentation() << "<block>" << std::endl;
+
+    // Indent
+    indentation_level++;
+
+    // For each statement, accept
+    for(auto &statement : block -> statements)
+        statement -> accept(this);
+
+    // Unindent
+    indentation_level--;
+
+    std::cout << indentation() << "</block>" << std::endl;
+}
+
+void ASTVisitor::visit(parser::ASTFuncNode *func) {
+
+    std::cout << indentation() << "<fn type = \"" + type_str(func->type) +
+                                "\">" << std::endl;
+
+    // Indent
+    indentation_level++;
+
+    // Function identifier
+    std::cout << indentation() << "<id>" + func->identifier + "</id>" << std::endl;
+
+    // For each parameter
+    for(auto &param : func -> parameters){
+        std::cout << indentation() << "<param type = \"" + type_str(param.second) +
+                                    "\">" + param.first + "</param>" << std::endl;
+    }
+
+    // Function body
+    func -> block -> accept(this);
+
+    // Unindent
+    indentation_level--;
+
+    std::cout << indentation() << "</fn>" << std::endl;
+}
+
+void ASTVisitor::visit(parser::ASTReturnNode *ret) {
+    std::cout << indentation() << "<return>" << std::endl;
+
+    // Indent
+    indentation_level++;
+
+    // Expression tags
+    ret -> expr -> accept(this);
+
+    // Unindent
+    indentation_level--;
+
+    std::cout << indentation() << "</return>" << std::endl;
+}
+
+void ASTVisitor::visit(parser::ASTExprFuncCallNode *func) {
+    std::cout << indentation() << "<fnc>" << std::endl;
+
+    // Indent
+    indentation_level++;
+
+    // Function identifier
+    std::cout << indentation() << "<id>" + func->identifier + "</id>" << std::endl;
+
+    // For each parameter
+    for(auto &param : func -> parameters){
+        std::cout << indentation() << "<args>" << std::endl;
+
+        // Indent and Accept
+        indentation_level++;
+        param->accept(this);
+
+        // Unindent
+        indentation_level--;
+        std::cout << indentation() << "</args>" << std::endl;
+    }
+
+    // Unindent
+    indentation_level--;
+    std::cout << indentation() << "</fnc>" << std::endl;
+}
+
 void ASTVisitor::visit(parser::ASTProgramNode *program) {
     std::cout << "\n<program>" << std::endl;
 
@@ -105,6 +189,10 @@ std::string ASTVisitor::type_str(parser::TYPE t) {
             return "int";
         case parser::FLOAT:
             return "float";
+        case parser::STRING:
+            return "string";
+        case parser::RES_NONE:
+            return "none";
         default:
             throw std::runtime_error("invalid type encountered in syntax tree");
     }
