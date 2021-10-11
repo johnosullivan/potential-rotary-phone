@@ -1,7 +1,8 @@
 #include <stack>
 #include <stdexcept>
 #include <iostream>
-#include "lexer.h"
+
+#include "core/lexer/lexer.h"
 
 using namespace core::lexer;
 
@@ -19,7 +20,12 @@ Lexer::Lexer(std::string& program) {
         std::cout << "T: " << t.get_tk_type_as_string() << std::endl;
         //std::cout << "======================" << std::endl;
 
-        tokens.push_back(t);
+        // check if comment line
+        if(t.type != TK_COMMENT_LINE) {
+            tokens.push_back(t);
+        } else {
+            // auto generate docs from comment line
+        }
     }
 }
 
@@ -113,6 +119,9 @@ int Lexer::find_transition(int steps, int state, char symbol) {
             //std::cout << "' result_state = " << result << std::endl;
             return result;
         }
+        case '\n': {
+            return transitions[TT_NEWLINE][state];
+        }
         case EOF: {
             int result = transitions[TT_ENDOFFILE][state];
             //std::cout << "' result_state = " << result << std::endl;
@@ -126,6 +135,9 @@ int Lexer::find_transition(int steps, int state, char symbol) {
                 //std::cout << "' result_state = " << result << std::endl;
                 return result;
             }
+
+            if ((0x20 <= ascii) && (ascii <= 0x7E))
+                return transitions[TT_PRINTABLE][state];
 
             int result = transitions[TT_OTHER][state];
             //std::cout << "' result_state = " << result << std::endl;

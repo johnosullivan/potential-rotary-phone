@@ -2,7 +2,7 @@
 #define PARSER_H
 
 #include "ast.h"
-#include "../lexer/lexer.h"
+#include "core/lexer/lexer.h"
 
 namespace core::parser {
 

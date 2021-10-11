@@ -1,5 +1,6 @@
 #include <iostream>
-#include "interpreter.h"
+
+#include "core/repl/interpreter.h"
 
 using namespace core::visitor;
 
@@ -69,6 +70,8 @@ std::vector<std::string> Scope::variable_names_of(std::string identifier, std::v
             return std::get<1>(i->second);
         }
     }
+
+    return {}; 
 }
 
 core::parser::TYPE Scope::type_of(std::string identifier) {
@@ -168,29 +171,58 @@ void Interpreter::visit(parser::ASTBinaryExprNode *bin) {
 
     value_t v;
 
-    if(op == "+" || op == "-") {
+    if( op == "+" || 
+        op == "-" || 
+        op == "/" ||
+        op == "*"
+    ) {
         if(l_type == parser::INT && r_type == parser::INT){
             current_expression_type = parser::INT;
             if(op == "+") {
                 v.i = l_value.i + r_value.i;
             } else if(op == "-") {
                 v.i = l_value.i - r_value.i;
+            } else if(op == "/") {
+                if(r_value.i == 0) {
+                    throw std::runtime_error("division error on line " + std::to_string(bin->code_line_number) + ".");
+                }
+                v.i = l_value.i / r_value.i;
+            } else if(op == "*") {
+                v.i = l_value.i * r_value.i;
             }
         }
         if(l_type == parser::FLOAT && r_type == parser::INT){
             current_expression_type = parser::FLOAT;
+            // grab the value as floats from ast
+            float l = l_value.f, r = float(r_value.i);
             if(op == "+") {
                 v.f = l_value.f + r_value.i;
             } else if(op == "-") {
                 v.f = l_value.f - r_value.i;
+            } else if(op == "/") {
+                if(r == 0) {
+                    throw std::runtime_error("division error on line " + std::to_string(bin->code_line_number) + ".");
+                }
+                v.f = l / r;
+            } else if(op == "*") {
+                v.f = l * r;
             }
         }
         if(l_type == parser::INT && r_type == parser::FLOAT){
             current_expression_type = parser::FLOAT;
+            // grab the value as floats from ast
+            float l = float(l_value.f), r = r_value.f;
             if(op == "+") {
                 v.f = l_value.i + r_value.f;
             } else if(op == "-") {
                 v.f = l_value.i - r_value.f;
+            } else if(op == "/") {
+                if(r == 0) {
+                    throw std::runtime_error("division error on line " + std::to_string(bin->code_line_number) + ".");
+                }
+                v.f = l / r;
+            } else if(op == "*") {
+                v.f = l * r;
             }
         }
     }
@@ -257,6 +289,8 @@ void Interpreter::visit(parser::ASTBlockNode *block) {
                 break;
             case parser::STRING:
                 scopes.back() -> declare(current_function_parameters[i], current_function_arguments[i].second.s);
+                break;
+            default:
                 break;
         }
     }

@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include "common/common.h"
 #include "token.h"
 
 namespace core::lexer {

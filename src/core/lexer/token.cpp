@@ -1,4 +1,4 @@
-#include "token.h"
+#include "core/lexer/token.h"
 
 #include <iostream>
 
@@ -22,6 +22,10 @@ TOKEN Token::token_type(int final_state, std::string &value) {
             return TK_FLOAT;
         case 4:
             return TK_ADDITIVE_OP;
+        case 5:
+            return TK_MULTIPLICATIVE; 
+        case 8:
+            return TK_EQUALS;
         case 10:
             if(value == "fn") {
                 return TK_FUNC;
@@ -46,8 +50,11 @@ TOKEN Token::token_type(int final_state, std::string &value) {
             } else { 
                 return TK_IDENTIFIER;
             }
-        case 8:
-            return TK_EQUALS;
+        case 11:
+            return TK_MULTIPLICATIVE; 
+        case 14:
+        case 16:
+            return TK_COMMENT_LINE;
         case 21:
             if(value == ":")
                 return TK_COLON;

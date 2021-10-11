@@ -30,7 +30,9 @@ namespace core::lexer {
         TK_PRINT = 21,
         TK_FUNC = 22,
         TK_RETURN = 23,
-        TK_COMMA = 24
+        TK_COMMA = 24,
+        TK_MULTIPLICATIVE = 25,
+        TK_COMMENT_LINE = 26,
     };
 
     static const char *ENUM_STR[] = {
@@ -58,7 +60,9 @@ namespace core::lexer {
         "TK_PRINT",
         "TK_FUNC",
         "TK_RETURN",
-        "TK_COMMA"
+        "TK_COMMA",
+        "TK_MULTIPLICATIVE",
+        "TK_COMMENT_LINE"
     };
 
     class Token {

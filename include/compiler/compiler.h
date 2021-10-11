@@ -3,9 +3,9 @@
 
 #include <fstream>
 
-#include "../common/visitor.h"
-#include "../core/parser/ast.h"
-#include "../core/repl/interpreter.h"
+#include "common/visitor.h"
+#include "core/parser/ast.h"
+#include "core/repl/interpreter.h"
 
 namespace core::compiler {
     enum COMPILER_ARCH_TYPE {

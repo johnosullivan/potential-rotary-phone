@@ -1,7 +1,7 @@
 #include <iostream>
 #include <algorithm>
 
-#include "parser.h"
+#include "core/parser/parser.h"
 
 using namespace core::parser;
 
@@ -336,7 +336,10 @@ ASTExprNode* Parser::parse_term() {
     ASTExprNode *factor = parse_factor();
     unsigned int line_number = current_token.line_number;
 
-
+    if(next_token.type == lexer::TK_MULTIPLICATIVE) {
+        consume_token();
+        return new ASTBinaryExprNode(current_token.value, factor, parse_term(), line_number);
+    }
 
     return factor;
 }

@@ -3,12 +3,18 @@ project(facile)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(fx
-        src/main.cpp
+include_directories(include)
 
+add_executable(fx
+        # logging class
+        src/lib/loguru.cpp
+
+        # main program
+        src/main.cpp
+        # lexer fx
         src/core/lexer/lexer.cpp
         src/core/lexer/token.cpp
-
+        # ast / parser
         src/core/parser/ast.cpp
         src/core/parser/astvisitor.cpp
         

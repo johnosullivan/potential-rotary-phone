@@ -1,6 +1,6 @@
-#include "compiler.h"
-
 #include <iostream>
+
+#include "compiler/compiler.h"
 
 using namespace core::compiler;
 using namespace core::visitor;

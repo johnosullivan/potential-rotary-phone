@@ -6,16 +6,15 @@
 #include <sstream>
 #include <filesystem>
 
-/* include core headers */
+/* include core/common headers */
+#include "common/common.h"
 #include "core/lexer/lexer.h"
 #include "core/parser/parser.h"
 #include "core/parser/ast.h"
 #include "core/parser/astvisitor.h"
-
 #include "core/repl/interpreter.h"
 
 #include "compiler/compiler.h"
-
 
 const std::string current_datetime() {
     time_t     now = time(0);
@@ -29,6 +28,9 @@ const std::string current_datetime() {
 }
 
 int main(int argc, char* argv[]) {
+    /* initialized loguru logger */
+    loguru::init(argc, argv);
+
     /* gets current time and converts to string */
     time_t now = time(0);
     tm *ltm = localtime(&now);
@@ -46,21 +48,22 @@ int main(int argc, char* argv[]) {
                 file_flag = true;
                 i++;
             }
-            if (strcmp(argv[i], "-v") == 0) {                 
+            // Disable verbose flag - loguru
+            /*if (strcmp(argv[i], "-v") == 0) {                 
                 verbose_flag = true;
                 verbose_level = atoi(argv[i + 1]);
                 i++;
-            }
+            }*/
         }
     }
 
+    /* output the details header */ 
     if (!file_flag) {
         std::cout << "Facile (fx) Simple Programming, Version 0.0.0 (" << current_datetime() << ")." << std::endl;
         std::cout << "Type \"help\", \"copyright\", \"credits\" or \"license\" for more information." << std::endl;
     }
 
     std::string source;
-
     core::visitor::Scope global_scope;
 
     // check if a source file is defined

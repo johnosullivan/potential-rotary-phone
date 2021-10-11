@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "../../common/visitor.h"
+#include "common/visitor.h"
 
 namespace core::parser {
 
