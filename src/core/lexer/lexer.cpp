@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <iostream>
 
+#include "common/common.h"
 #include "core/lexer/lexer.h"
 
 using namespace core::lexer;
@@ -11,14 +12,9 @@ Lexer::Lexer(std::string& program) {
 
     Token t;
     while(current_index <= program.length()) {
-        std::cout << "======================" << std::endl;
         t = next_token(program, current_index);
 
-        //std::cout << "L: " << t.line_number << std::endl;
-        std::cout << "----------------------" << std::endl;
-        std::cout << "V: " << t.value << std::endl;
-        std::cout << "T: " << t.get_tk_type_as_string() << std::endl;
-        //std::cout << "======================" << std::endl;
+        LOG_F(INFO, "%s %s", t.get_tk_type_as_string().c_str(), t.value.c_str());
 
         // check if comment line
         if(t.type != TK_COMMENT_LINE) {

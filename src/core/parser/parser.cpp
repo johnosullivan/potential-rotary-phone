@@ -290,9 +290,6 @@ ASTExprFuncCallNode* Parser::parse_function_call() {
 }
 
 ASTStatementNode* Parser::parse_statement() {
-    std::cout << "parse_statement" << std::endl;
-    std::cout << current_token.get_tk_type_as_string() << std::endl;
-
     switch(current_token.type){
         case lexer::TK_VAR:
             return parse_declaration_statement();

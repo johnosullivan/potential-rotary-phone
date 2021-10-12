@@ -1,6 +1,7 @@
-#include "core/lexer/token.h"
-
 #include <iostream>
+
+#include "common/common.h"
+#include "core/lexer/token.h"
 
 using namespace core::lexer;
 
@@ -13,7 +14,7 @@ Token::Token(int final_state, std::string value, unsigned int line_number):
 TOKEN Token::token_type(int final_state, std::string &value) {
     /* EOF 100 */
 
-    std::cout << "Done: " << final_state << " Value: '" << value << "'" << std::endl;
+    LOG_F(INFO, "%s %d", value.c_str(), final_state);
 
     switch(final_state) {
         case 1:
