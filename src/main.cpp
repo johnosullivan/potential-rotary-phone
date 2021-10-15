@@ -145,12 +145,13 @@ int main(int argc, char* argv[]) {
 
                 if(source == ".q") {
                     break;
-                } if (source == ".s") {
-                    std::cout << "\e[1mCurrently Declared Variables and Functions\e[0m" << std::endl;
-                    TextTable vt('-', '|', '*');
+                } else if(source == ".q") {
+                    break;
+                } else if (source == ".s") {
+                    TextTable vt('-', '|', 'o');
                     vt.add("Name");
                     vt.add("Type");
-                    vt.add("Current Value");
+                    vt.add("Value");
                     vt.endOfRow();
                     for(auto var : global_scope.all_variable_list()) {
                         vt.add(std::get<0>(var));

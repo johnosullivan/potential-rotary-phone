@@ -17,8 +17,9 @@ Parser::Parser(lexer::Lexer* lex) : lexer(lex) {
 
 Parser::Parser(lexer::Lexer* lex, unsigned int tokens) : lexer(lex) {
     next_token = lex->next_token();
-    for(unsigned int i = 0; i < tokens; i++)
+    for(unsigned int i = 0; i < tokens; i++) {
         consume_token();
+    }
 }
 
 void Parser::consume_token() {
@@ -61,7 +62,7 @@ ASTDeclarationNode* Parser::parse_declaration_statement() {
                                  + std::to_string(current_token.line_number) + ".");
     identifier = current_token.value;
 
-    std::cout << identifier << std::endl;
+    // << identifier << std::endl;
 
     consume_token();
     if(current_token.type != lexer::TK_COLON)
@@ -358,11 +359,11 @@ ASTExprNode* Parser::parse_factor() {
         case lexer::TK_INT:
             return new ASTLiteralNode<int>(std::stoi(current_token.value), line_number);
         case lexer::TK_FLOAT: {
-            std::cout << "ASTLiteralNode<float>" << std::endl;
+            //std::cout << "ASTLiteralNode<float>" << std::endl;
             return new ASTLiteralNode<float>(std::stof(current_token.value), line_number);
         }
         case lexer::TK_BOOL: {
-            std::cout << "ASTLiteralNode<bool>" << std::endl;
+            //std::cout << "ASTLiteralNode<bool>" << std::endl;
             return new ASTLiteralNode<bool>(current_token.value == "true", line_number);
         }
         case lexer::TK_STRING: {
@@ -433,7 +434,7 @@ ASTExprNode* Parser::parse_expression() {
 }
 
 TYPE Parser::parse_type(std::string& identifier) {
-    std::cout << current_token.type << std::endl;
+   //std::cout << current_token.type << std::endl;
 
     switch(current_token.type){
         case lexer::TK_INT_TYPE:

@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "common/common.h"
 #include "core/parser/astvisitor.h"
 
 using namespace core::visitor;
@@ -19,7 +20,7 @@ std::string ASTVisitor::indentation() {
 }
 
 void ASTVisitor::visit(parser::ASTBlockNode *block) {
-    std::cout << indentation() << "<block>" << std::endl;
+    LOG_F(INFO, "%s<block>", indentation().c_str());
 
     // Indent
     indentation_level++;
@@ -31,24 +32,21 @@ void ASTVisitor::visit(parser::ASTBlockNode *block) {
     // Unindent
     indentation_level--;
 
-    std::cout << indentation() << "</block>" << std::endl;
+    LOG_F(INFO, "%s</block>", indentation().c_str());
 }
 
 void ASTVisitor::visit(parser::ASTFuncNode *func) {
-
-    std::cout << indentation() << "<fn type = \"" + type_str(func->type) +
-                                "\">" << std::endl;
+    LOG_F(INFO, "%s<fn type='%s'>", indentation().c_str(), type_str(func->type).c_str());
 
     // Indent
     indentation_level++;
 
     // Function identifier
-    std::cout << indentation() << "<id>" + func->identifier + "</id>" << std::endl;
+    LOG_F(INFO, "%s<id>%s</id>", indentation().c_str(), func->identifier.c_str());
 
     // For each parameter
     for(auto &param : func -> parameters){
-        std::cout << indentation() << "<param type = \"" + type_str(param.second) +
-                                    "\">" + param.first + "</param>" << std::endl;
+        LOG_F(INFO, "%s<param type='%s'>%s</param>", indentation().c_str(), type_str(param.second).c_str(), param.first.c_str());
     }
 
     // Function body
@@ -57,11 +55,11 @@ void ASTVisitor::visit(parser::ASTFuncNode *func) {
     // Unindent
     indentation_level--;
 
-    std::cout << indentation() << "</fn>" << std::endl;
+    LOG_F(INFO, "%s</fn>", indentation().c_str());
 }
 
 void ASTVisitor::visit(parser::ASTReturnNode *ret) {
-    std::cout << indentation() << "<return>" << std::endl;
+    LOG_F(INFO, "%s<return>", indentation().c_str());
 
     // Indent
     indentation_level++;
@@ -72,21 +70,21 @@ void ASTVisitor::visit(parser::ASTReturnNode *ret) {
     // Unindent
     indentation_level--;
 
-    std::cout << indentation() << "</return>" << std::endl;
+    LOG_F(INFO, "%s</return>", indentation().c_str());
 }
 
 void ASTVisitor::visit(parser::ASTExprFuncCallNode *func) {
-    std::cout << indentation() << "<fnc>" << std::endl;
+    LOG_F(INFO, "%s<fnc>", indentation().c_str());
 
     // Indent
     indentation_level++;
 
     // Function identifier
-    std::cout << indentation() << "<id>" + func->identifier + "</id>" << std::endl;
+    LOG_F(INFO, "%s<id>%s</id>", indentation().c_str(), func->identifier.c_str());
 
     // For each parameter
     for(auto &param : func -> parameters){
-        std::cout << indentation() << "<args>" << std::endl;
+        LOG_F(INFO, "%s<args>", indentation().c_str());
 
         // Indent and Accept
         indentation_level++;
@@ -94,16 +92,17 @@ void ASTVisitor::visit(parser::ASTExprFuncCallNode *func) {
 
         // Unindent
         indentation_level--;
-        std::cout << indentation() << "</args>" << std::endl;
+        LOG_F(INFO, "%s</args>", indentation().c_str());
     }
 
     // Unindent
     indentation_level--;
-    std::cout << indentation() << "</fnc>" << std::endl;
+    LOG_F(INFO, "%s</fnc>", indentation().c_str());
 }
 
 void ASTVisitor::visit(parser::ASTProgramNode *program) {
-    std::cout << "\n<program>" << std::endl;
+    LOG_F(INFO, "");
+    LOG_F(INFO, "<program>");
 
     indentation_level++;
 
@@ -113,22 +112,22 @@ void ASTVisitor::visit(parser::ASTProgramNode *program) {
 
     indentation_level--;
 
-    std::cout << "</program>\n" << std::endl;
+    LOG_F(INFO, "</program>");
 }
 
 void ASTVisitor::visit(parser::ASTDeclarationNode *decl) {
-    std::cout << indentation() << "<declaration>" << std::endl;
+    LOG_F(INFO, "%s<declaration>", indentation().c_str());
 
     indentation_level++;
 
-    std::cout << indentation() << "<id type = \"" + type_str(decl -> type) + "\">"
-                             << decl -> identifier << "</id>" << std::endl;
+    LOG_F(INFO, "%s<id type ='%s'>%s</id>", indentation().c_str(), type_str(decl -> type).c_str(), decl->identifier.c_str());
 
     decl -> expr -> accept(this);
 
     indentation_level--;
 
-    std::cout << indentation() << "</declaration>" << std::endl;
+    LOG_F(INFO, "%s</declaration>", indentation().c_str());
+
 }
 
 void ASTVisitor::visit(parser::ASTAssignmentNode *assign) {
@@ -136,31 +135,28 @@ void ASTVisitor::visit(parser::ASTAssignmentNode *assign) {
 }
 
 void ASTVisitor::visit(parser::ASTIdentifierNode *id) {
-    std::cout << indentation() << "<id>";
-
-    std::cout << id -> identifier;
-
-    std::cout << "</id>" << std::endl;
+    LOG_F(INFO, "%s<id>%s</id>", indentation().c_str(), id->identifier.c_str());
 }
 
 void ASTVisitor::visit(parser::ASTLiteralNode<int> *lit) {
-    std::cout << indentation()  << "<int>" << std::to_string(lit->val) << "</int>" << std::endl;
+    LOG_F(INFO, "%s<int>%s</int>", indentation().c_str(), std::to_string(lit->val).c_str());
 }
 
 void ASTVisitor::visit(parser::ASTLiteralNode<bool> *lit) {
-    std::cout << indentation()  << "<bool>" << ((lit->val) ? "true" : "false") << "</bool>" << std::endl;
+    LOG_F(INFO, "%s<bool>%s</bool>", indentation().c_str(), (lit->val) ? "true" : "false");
+
 }
 
 void ASTVisitor::visit(parser::ASTLiteralNode<std::string> *lit) {
-    std::cout << indentation()  << "<string>" << lit->val << "</string>" << std::endl;
+    LOG_F(INFO, "%s<string>%s</string>", indentation().c_str(), lit->val.c_str());
 }
 
 void ASTVisitor::visit(parser::ASTLiteralNode<float> *lit) {
-    std::cout << indentation()  << "<float>" << std::to_string(lit->val) << "</float>" << std::endl;
+    LOG_F(INFO, "%s<float>%s</float>", indentation().c_str(), std::to_string(lit->val).c_str());
 }
 
 void ASTVisitor::visit(parser::ASTBinaryExprNode *bin) {
-    std::cout << indentation() << "<bin op = \"" + safe_op(bin->op) + "\">" << std::endl;
+    LOG_F(INFO, "%s<bin> op='%s'>", indentation().c_str(), safe_op(bin->op).c_str());
 
     // Indent
     indentation_level++;
@@ -171,19 +167,18 @@ void ASTVisitor::visit(parser::ASTBinaryExprNode *bin) {
     // Unindent
     indentation_level--;
 
-    std::cout << indentation() << "</bin>" << std::endl;
+    LOG_F(INFO, "%s</bin>", indentation().c_str());
 }
 
 void ASTVisitor::visit(parser::ASTStdOutNode *stdout){
-    std::cout << indentation() << "<stdout>" << std::endl;
-
+    LOG_F(INFO, "%s<stdout>", indentation().c_str());
     indentation_level++;
 
     stdout -> expr -> accept(this);
 
     indentation_level--;
 
-    std::cout << indentation() << "</stdout>" << std::endl;
+    LOG_F(INFO, "%s</stdout>", indentation().c_str());
 }
 
 std::string ASTVisitor::type_str(parser::TYPE t) {

@@ -46,39 +46,32 @@ int Lexer::find_transition(int steps, int state, char symbol) {
         case '8':
         case '9': {
             int result = transitions[TT_DIGIT][state];
-            //std::cout << "' result_state = " << result << std::endl;
             return result;
         }
         case '.': {
             int result = transitions[TT_PERIOD][state];
-            //std::cout << "' result_state = " << result << std::endl;
             return result;
         }
         case '*': {
             int result = transitions[TT_ASTERISK][state];
-            //std::cout << "' result_state = " << result << std::endl;
             return result;
         }
         case '+':
         case '-': {
             int result = transitions[TT_ADDITIVE_OP][state];
-            //std::cout << "' result_state = " << result << std::endl;
             return result;
         }
         case '!': {
             int result = transitions[TT_EXCL_MARK][state];
-            //std::cout << "' result_state = " << result << std::endl;
             return result;
         }
         case '>':
         case '<': {
             int result = transitions[TT_ORDER_REL][state];
-            //std::cout << "' result_state = " << result << std::endl;
             return result;
         }
         case '=': {
             int result = transitions[TT_EQUALS][state];
-            //std::cout << "' result_state = " << result << std::endl;
             return result;
         }
         case ':':
@@ -89,27 +82,22 @@ int Lexer::find_transition(int steps, int state, char symbol) {
         case '{':
         case '}': {
             int result = transitions[TT_PUNCTUATION][state];
-            //std::cout << "' result_state = " << result << std::endl;
             return result;
         }
         case '_': {
             int result = transitions[TT_UNDERSCORE][state];
-            //std::cout << "' result_state = " << result << std::endl;
             return result;
         }
         case '/': {
             int result = transitions[TT_FORWARDSLASH][state];
-            //std::cout << "' result_state = " << result << std::endl;
             return result;
         }
         case '\\': {
             int result = transitions[TT_BACKSLASH][state];
-            //std::cout << "' result_state = " << result << std::endl;
             return result;
         }
         case '\"': {
             int result = transitions[TT_QUOTATION_MARK][state];
-            //std::cout << "' result_state = " << result << std::endl;
             return result;
         }
         case '\n': {
@@ -117,7 +105,6 @@ int Lexer::find_transition(int steps, int state, char symbol) {
         }
         case EOF: {
             int result = transitions[TT_ENDOFFILE][state];
-            //std::cout << "' result_state = " << result << std::endl;
             return result;
         }
         default: {
