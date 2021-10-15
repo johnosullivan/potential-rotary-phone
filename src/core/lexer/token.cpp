@@ -25,6 +25,8 @@ TOKEN Token::token_type(int final_state, std::string &value) {
             return TK_ADDITIVE_OP;
         case 5:
             return TK_MULTIPLICATIVE; 
+        case 7:
+            return TK_RELATIONAL_OP;
         case 8:
             return TK_EQUALS;
         case 10:
@@ -46,11 +48,16 @@ TOKEN Token::token_type(int final_state, std::string &value) {
             if(value == "int") {
                 return TK_INT_TYPE;
             }
+            if(value == "bool") {
+                return TK_BOOL_TYPE;
+            }
+            if(value == "true" || value == "false") {
+                return TK_BOOL;
+            }
             if(value == "float") {
                 return TK_FLOAT_TYPE;
-            } else { 
-                return TK_IDENTIFIER;
-            }
+            } 
+            return TK_IDENTIFIER;
         case 11:
             return TK_MULTIPLICATIVE; 
         case 14:

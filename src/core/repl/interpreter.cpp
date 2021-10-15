@@ -43,10 +43,44 @@ void Scope::declare(std::string identifier, std::string string_value) {
     variable_symbol_table[identifier] = std::make_pair(parser::STRING, value);
 }
 
+void Scope::declare(std::string identifier, bool bool_value) {
+    value_t value;
+    value.b = bool_value;
+    variable_symbol_table[identifier] = std::make_pair(parser::BOOL, value);
+}
+
 void Scope::declare(std::string identifier, std::vector<parser::TYPE> signature, std::vector<std::string> variable_names, parser::ASTBlockNode* block) {
     function_symbol_table.insert(std::make_pair(identifier, std::make_tuple(signature,
                                                                variable_names,
                                                                block)));
+}
+
+std::vector<std::tuple<std::string, std::string, std::string>> Scope::all_variable_list() {
+    std::vector<std::tuple<std::string, std::string, std::string>> list;
+
+    for(auto const &var : variable_symbol_table)
+        switch(var.second.first){
+            case parser::INT:
+                list.emplace_back(std::make_tuple(
+                        var.first, "int", std::to_string(var.second.second.i)));
+                break;
+            case parser::FLOAT:
+                list.emplace_back(std::make_tuple(
+                        var.first, "float", std::to_string(var.second.second.f)));
+                break;
+            case parser::BOOL:
+                list.emplace_back(std::make_tuple(
+                        var.first, "bool",  (var.second.second.b) ? "true" : "false"));
+                break;
+            case parser::STRING:
+                list.emplace_back(std::make_tuple(
+                        var.first, "string",  var.second.second.s));
+                break;
+            default:
+                break;
+        }
+
+    return std::move(list);
 }
 
 core::parser::ASTBlockNode* Scope::block_of(std::string identifier, std::vector<parser::TYPE> signature) {
@@ -140,6 +174,13 @@ void Interpreter::visit(parser::ASTLiteralNode<std::string> *lit) {
     current_expression_value = std::move(v);
 }
 
+void Interpreter::visit(parser::ASTLiteralNode<bool> *lit) {
+    value_t v;
+    v.b = lit->val;
+    current_expression_type = parser::BOOL;
+    current_expression_value = std::move(v);
+}
+
 void Interpreter::visit(parser::ASTAssignmentNode *assign) {
     unsigned long i;
     for (i = scopes.size() - 1; !scopes[i] -> already_declared(assign->identifier); i--);
@@ -170,13 +211,14 @@ void Interpreter::visit(parser::ASTBinaryExprNode *bin) {
     value_t r_value = current_expression_value;
 
     value_t v;
+    //current_expression_type = parser::RES_NONE;
 
     if( op == "+" || 
         op == "-" || 
         op == "/" ||
         op == "*"
     ) {
-        if(l_type == parser::INT && r_type == parser::INT){
+        if(l_type == parser::INT && r_type == parser::INT) {
             current_expression_type = parser::INT;
             if(op == "+") {
                 v.i = l_value.i + r_value.i;
@@ -191,7 +233,7 @@ void Interpreter::visit(parser::ASTBinaryExprNode *bin) {
                 v.i = l_value.i * r_value.i;
             }
         }
-        if(l_type == parser::FLOAT && r_type == parser::INT){
+        if(l_type == parser::FLOAT && r_type == parser::INT) {
             current_expression_type = parser::FLOAT;
             // grab the value as floats from ast
             float l = l_value.f, r = float(r_value.i);
@@ -208,7 +250,7 @@ void Interpreter::visit(parser::ASTBinaryExprNode *bin) {
                 v.f = l * r;
             }
         }
-        if(l_type == parser::INT && r_type == parser::FLOAT){
+        if(l_type == parser::INT && r_type == parser::FLOAT) {
             current_expression_type = parser::FLOAT;
             // grab the value as floats from ast
             float l = float(l_value.f), r = r_value.f;
@@ -224,6 +266,34 @@ void Interpreter::visit(parser::ASTBinaryExprNode *bin) {
             } else if(op == "*") {
                 v.f = l * r;
             }
+        } else {
+            /* concat strings */
+            if(l_type == parser::STRING && r_type == parser::STRING) {
+                current_expression_type = parser::STRING;
+                v.s = l_value.s + r_value.s;
+            }
+        }
+    } else {
+        /* all the different comparator operators */
+        current_expression_type = parser::BOOL;
+        float l = l_value.f, r = r_value.f;
+        if(r_type == parser::INT) {
+            r = r_value.i;
+        }
+        if(l_type == parser::INT) {
+            l = l_value.i;
+        }
+
+        if(op == "<") {
+            v.b = l < r;
+        } else if(op == "<=") {
+            v.b = l <= r;
+        } else if(op == ">") {
+            v.b = l > r;
+        } else if(op == ">=") {
+            v.b = l >= r;
+        } else if(op == "==") {
+            v.b = l == r;
         }
     }
     
@@ -244,10 +314,14 @@ void Interpreter::visit(parser::ASTDeclarationNode *decl) {
         case parser::FLOAT:
             scopes.back()->declare(decl->identifier, current_expression_value.f);
             break;
+        case parser::BOOL:
+            scopes.back()->declare(decl->identifier, current_expression_value.b);
         default:
             break;
     }
 }
+
+
 
 void Interpreter::visit(parser::ASTIdentifierNode *id) {
     //std::cout << "ASTIdentifierNode" << std::endl;

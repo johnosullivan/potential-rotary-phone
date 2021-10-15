@@ -6,5 +6,5 @@ fn func1(n : int) : int {
     return y + 5
 }
 
-var res : int = func1(5)
+var res : int = func1(5) 
 print(res)

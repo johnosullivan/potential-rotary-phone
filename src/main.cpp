@@ -8,6 +8,7 @@
 
 /* include core/common headers */
 #include "common/common.h"
+#include "common/table.h"
 #include "core/lexer/lexer.h"
 #include "core/parser/parser.h"
 #include "core/parser/ast.h"
@@ -122,6 +123,10 @@ int main(int argc, char* argv[]) {
                     std::cout << current.second.f << std::endl;
                     break;
                 case core::parser::STRING:
+                    std::cout << current.second.s << std::endl;
+                    break;
+                case core::parser::BOOL:
+                    std::cout << (current.second.b ? "true" : "false") << std::endl;
                     break;
                 default:
                     break;
@@ -140,6 +145,21 @@ int main(int argc, char* argv[]) {
 
                 if(source == ".q") {
                     break;
+                } if (source == ".s") {
+                    std::cout << "\e[1mCurrently Declared Variables and Functions\e[0m" << std::endl;
+                    TextTable vt('-', '|', '*');
+                    vt.add("Name");
+                    vt.add("Type");
+                    vt.add("Current Value");
+                    vt.endOfRow();
+                    for(auto var : global_scope.all_variable_list()) {
+                        vt.add(std::get<0>(var));
+                        vt.add(std::get<1>(var));
+                        vt.add(std::get<2>(var));
+                        vt.endOfRow();
+                    }
+                    vt.setAlignment(2, TextTable::Alignment::RIGHT);
+                    std::cout << vt << std::endl;
                 } else {
                     //std::cout << source << std::endl;
 
@@ -168,10 +188,10 @@ int main(int argc, char* argv[]) {
                     //std::cout << "====================================" << std::endl;
 
                     /* Debugger AST */
-                    if (verbose_flag) {
+                    //if (verbose_flag) {
                         core::visitor::ASTVisitor ast_visitor;
                         ast_visitor.visit(prog);
-                    }
+                    //}
 
                     core::visitor::Interpreter interpreter(&global_scope);
                     interpreter.visit(prog);
@@ -186,6 +206,9 @@ int main(int argc, char* argv[]) {
                             break;
                         case core::parser::STRING:
                             std::cout << current.second.s << std::endl;
+                            break;
+                        case core::parser::BOOL:
+                            std::cout << (current.second.b ? "true" : "false") << std::endl;
                             break;
                         default:
                             break;

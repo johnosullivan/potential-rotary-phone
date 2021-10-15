@@ -13,7 +13,8 @@ namespace core::parser {
         INT         = 0,
         FLOAT       = 1,
         STRING      = 2,
-        RES_NONE    = 4
+        RES_NONE    = 3,
+        BOOL        = 4
     };
 
     // Abstract Syntax Tree (AST) Nodes

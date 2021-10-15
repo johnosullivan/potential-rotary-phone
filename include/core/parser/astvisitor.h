@@ -3,7 +3,7 @@
 
 #include <fstream>
 
-#include "../../common/visitor.h"
+#include "common/visitor.h"
 
 #include "ast.h"
 
@@ -21,6 +21,7 @@ namespace core::visitor {
         void visit(parser::ASTLiteralNode<int>*) override;
         void visit(parser::ASTLiteralNode<float>*) override;
         void visit(parser::ASTLiteralNode<std::string>*) override;
+        void visit(parser::ASTLiteralNode<bool>*) override;
 
         void visit(parser::ASTBinaryExprNode*) override;
 

@@ -34,9 +34,6 @@ Token Lexer::next_token() {
 }
 
 int Lexer::find_transition(int steps, int state, char symbol) {
-    
-    //std::cout << steps << ") start_state => " << state << " symbol => '" << symbol;
-
     switch(symbol){
         case '0':
         case '1':
@@ -128,7 +125,6 @@ int Lexer::find_transition(int steps, int state, char symbol) {
 
             if (((0x41 <= ascii) && (ascii <= 0x5A)) || ((0x61 <= ascii) && (ascii <= 0x7A))) {
                 int result = transitions[TT_LETTER][state];
-                //std::cout << "' result_state = " << result << std::endl;
                 return result;
             }
 
@@ -136,7 +132,6 @@ int Lexer::find_transition(int steps, int state, char symbol) {
                 return transitions[TT_PRINTABLE][state];
 
             int result = transitions[TT_OTHER][state];
-            //std::cout << "' result_state = " << result << std::endl;
             return result;
         }
     }

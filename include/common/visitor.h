@@ -40,6 +40,7 @@ namespace core::visitor {
             virtual void visit(parser::ASTLiteralNode<int>*) = 0;
             virtual void visit(parser::ASTLiteralNode<float>*) = 0;
             virtual void visit(parser::ASTLiteralNode<std::string>*) = 0;
+            virtual void visit(parser::ASTLiteralNode<bool>*) = 0;
 
             virtual void visit(parser::ASTBinaryExprNode*) = 0;
             virtual void visit(parser::ASTDeclarationNode*) = 0;

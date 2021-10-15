@@ -89,6 +89,10 @@ namespace core::parser {
     void ASTLiteralNode<std::string>::accept(visitor::Visitor *v) {
         v->visit(this);
     }
+    template<>
+    void ASTLiteralNode<bool>::accept(visitor::Visitor *v) {
+        v->visit(this);
+    }
 }
 
 void ASTBinaryExprNode::accept(visitor::Visitor *v){

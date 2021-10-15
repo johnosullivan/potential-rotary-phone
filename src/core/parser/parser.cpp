@@ -61,6 +61,8 @@ ASTDeclarationNode* Parser::parse_declaration_statement() {
                                  + std::to_string(current_token.line_number) + ".");
     identifier = current_token.value;
 
+    std::cout << identifier << std::endl;
+
     consume_token();
     if(current_token.type != lexer::TK_COLON)
         throw std::runtime_error("expected ':' after " + identifier + " on line "
@@ -184,9 +186,9 @@ ASTFuncNode* Parser::parse_func() {
     consume_token();
 
     if(current_token.type != lexer::TK_COLON) {
-        std::cout << current_token.get_tk_type_as_string() << std::endl;
+        //std::cout << current_token.get_tk_type_as_string() << std::endl;
         if(current_token.type == lexer::TK_LEFT_CURLY) {
-            std::cout << "return none type" << std::endl;
+            //std::cout << "return none type" << std::endl;
         } else {
             throw std::runtime_error("Expected ':' or '{' after ')' on line " + std::to_string(current_token.line_number) + ".");
         }
@@ -262,7 +264,7 @@ ASTReturnNode* Parser::parse_return() {
 }
 
 ASTExprFuncCallNode* Parser::parse_function_call() {
-    std::cout << "parse_function_call" << std::endl;
+
     // current token is the function identifier
     std::string identifier = current_token.value;
     auto *parameters = new std::vector<ASTExprNode*>;
@@ -355,8 +357,14 @@ ASTExprNode* Parser::parse_factor() {
         // Literal Cases
         case lexer::TK_INT:
             return new ASTLiteralNode<int>(std::stoi(current_token.value), line_number);
-        case lexer::TK_FLOAT:
+        case lexer::TK_FLOAT: {
+            std::cout << "ASTLiteralNode<float>" << std::endl;
             return new ASTLiteralNode<float>(std::stof(current_token.value), line_number);
+        }
+        case lexer::TK_BOOL: {
+            std::cout << "ASTLiteralNode<bool>" << std::endl;
+            return new ASTLiteralNode<bool>(current_token.value == "true", line_number);
+        }
         case lexer::TK_STRING: {
             current_token.value.erase(std::remove(current_token.value.begin(), current_token.value.end(), '"'), current_token.value.end());
             return new ASTLiteralNode<std::string>(current_token.value, line_number);
@@ -413,21 +421,27 @@ ASTStdOutNode* Parser::parse_std_out_statement() {
 }
 
 ASTExprNode* Parser::parse_expression() {
-    //std::cout << "parse_expression" << std::endl;
-
     ASTExprNode *simple_expr = parse_simple_expression();
-
     unsigned int line_number = current_token.line_number;
+
+    if(next_token.type == lexer::TK_RELATIONAL_OP) {
+        consume_token();
+        return new ASTBinaryExprNode(current_token.value, simple_expr, parse_expression(), line_number);
+    }
 
     return simple_expr;
 }
 
 TYPE Parser::parse_type(std::string& identifier) {
+    std::cout << current_token.type << std::endl;
+
     switch(current_token.type){
         case lexer::TK_INT_TYPE:
             return INT;
         case lexer::TK_FLOAT_TYPE:
             return FLOAT;
+        case lexer::TK_BOOL_TYPE:
+            return BOOL;
         default:
             throw std::runtime_error("expected type for " + identifier + " after ':' on line "
                                      + std::to_string(current_token.line_number) + ".");

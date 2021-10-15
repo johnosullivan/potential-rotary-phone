@@ -18,14 +18,15 @@ namespace core::visitor {
         void declare(std::string, int);
         void declare(std::string, float);
         void declare(std::string, std::string);
-        void declare(std::string, std::vector<parser::TYPE>, std::vector<std::string>,
-                parser::ASTBlockNode*);
+        void declare(std::string, bool);
+
+        void declare(std::string, std::vector<parser::TYPE>, std::vector<std::string>, parser::ASTBlockNode*);
 
         parser::TYPE type_of(std::string);
         value_t value_of(std::string);
 
         std::vector<std::string> variable_names_of(std::string, std::vector<parser::TYPE>);
-        std::vector<std::tuple<std::string, std::string, std::string>>  variable_list();
+        std::vector<std::tuple<std::string, std::string, std::string>>  all_variable_list();
         parser::ASTBlockNode* block_of(std::string, std::vector<parser::TYPE>);
 
     private:
@@ -51,6 +52,7 @@ namespace core::visitor {
         void visit(parser::ASTLiteralNode<int>*) override;
         void visit(parser::ASTLiteralNode<float>*) override;
         void visit(parser::ASTLiteralNode<std::string>*) override;
+        void visit(parser::ASTLiteralNode<bool>*) override;
 
         void visit(parser::ASTBinaryExprNode*) override;
 
