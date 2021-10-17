@@ -61,7 +61,12 @@ void Compiler::visit(parser::ASTProgramNode *program) {
     for(auto &statement : program -> statements) {
         statement -> accept(this);
     }
+
+    add_asm(AsmLine("", "", "", ""));
+    add_asm(AsmLine("", "section", ".data", ""));
+    add_asm(AsmLine("message:", "db", "\"Hello World!\", 10", ""));
 }
+
 
 void Compiler::visit(parser::ASTLiteralNode<int> *lit) {
     value_t v;
@@ -138,9 +143,9 @@ void Compiler::visit(parser::ASTLiteralNode<std::string>* lit) {
 }
 
 void Compiler::visit(parser::ASTFuncNode* fn) {
-    add_asm(AsmLine(fn->identifier + ":", "", "", ";"));
-    add_asm(AsmLine("", "push", "rbp", ";"));
-    add_asm(AsmLine("", "mov", "edx, DWORD [rbp-4]", ";"));
+    add_asm(AsmLine(fn->identifier + ":", "", "", ""));
+    add_asm(AsmLine("", "push", "rbp", ""));
+    add_asm(AsmLine("", "mov", "edx, DWORD [rbp-4]", ""));
 
     
     // lists all the parameters
@@ -181,6 +186,9 @@ std::string Compiler::padding(int j) {
 }
 
 void Compiler::add_asm(AsmLine a) {
+    if (a.getLabel().length() > l0_padding_max) {
+        l0_padding_max = a.getLabel().length();
+    }
 
     if (a.getInstruction().length() > l1_padding_max) {
         l1_padding_max = a.getInstruction().length();
@@ -193,25 +201,42 @@ void Compiler::add_asm(AsmLine a) {
     asm_commands.push_back(a);
 }
 
+std::string Compiler::comment_char_arch() {
+    switch(arch_type) {
+        case ARCH_X86:
+            return ";";
+        case ARCH_X86_64:
+            return ";";
+        case ARCH_ARM:
+            return ";";
+    }
+}
+
 void Compiler::stdout_vector() {
     std::cout << "" << std::endl;
 
-    std::cout << "l1_padding_max: " << l1_padding_max << std::endl;
-    std::cout << "l2_padding_max: " << l2_padding_max << std::endl;
-
+    int l0 = l0_padding_max + 1;
     int l1 = l1_padding_max + 1;
     int l2 = l2_padding_max + 1;
+
+    /*std::cout << "l0_padding_max: " << l0_padding_max << std::endl;
+    std::cout << "l1_padding_max: " << l1_padding_max << std::endl;
+    std::cout << "l2_padding_max: " << l2_padding_max << std::endl;
+    std::cout << "" << std::endl;*/
 
     for (auto &command : asm_commands)
     { 
         std::string temp = "";
+        temp = temp + command.getLabel();
+        int diffl0 = command.getLabel().length() - l0;
+        if (diffl0 > 0) {
+            temp.erase(temp.length() - (1 + diffl0), diffl0);
+        } else if (diffl0 < 0) {
+            temp = temp + padding(std::abs(diffl0));
+        }
 
-        temp = temp + command.getLabel() + TAB + TAB + command.getInstruction() + TAB + TAB;
-
-
-
-        int diffl1 = temp.length() - l1;
-        std::cout << "diffl1: " << diffl1 << std::endl;
+        temp = temp + command.getInstruction();
+        int diffl1 = command.getInstruction().length() - l1;
         if (diffl1 > 0) {
             temp.erase(temp.length() - (1 + diffl1), diffl1);
         } else if (diffl1 < 0) {
@@ -219,17 +244,16 @@ void Compiler::stdout_vector() {
         }
 
         temp = temp + command.getOperand();
-
-        int diffl3 = temp.length() - (l1 + l2);
-        //std::cout << "diffl3: " << diffl3 << std::endl;
-
+        int diffl3 = command.getOperand().length() - (l1 + l2);
         if (diffl3 > 0) {
             temp.erase(temp.length() - (1 + diffl3), diffl3);
         } else if (diffl3 < 0) {
             temp = temp + padding(std::abs(diffl3));
         }
 
-        temp = temp + padding(1) + command.getComment();
+        if (command.getComment().length() != 0) {
+            temp = temp + padding(1) + comment_char_arch() + " " + command.getComment();
+        }
 
         std::cout << temp << std::endl;
     }

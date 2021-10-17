@@ -63,7 +63,9 @@ namespace core::compiler {
             unsigned int indentation_num;
             const std::string TAB = "    ";
             std::string indentation();
+            std::string comment_char_arch();
             std::string padding(int);
+            int l0_padding_max = 0;
             int l1_padding_max = 0;
             int l2_padding_max = 0;
 
