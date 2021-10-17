@@ -106,11 +106,9 @@ int main(int argc, char* argv[]) {
                 }
             }
 
-            /* Debugger AST */
-            if (verbose_flag) {
-                core::visitor::ASTVisitor ast_visitor;
-                ast_visitor.visit(prog);
-            }
+            /* Debugger AST mapping */
+            core::visitor::ASTVisitor ast_visitor;
+            ast_visitor.visit(prog);
 
             core::visitor::Interpreter interpreter;
             interpreter.visit(prog);
@@ -132,6 +130,9 @@ int main(int argc, char* argv[]) {
                     break;
             }
 
+            core::compiler::Compiler compiler(core::compiler::ARCH_X86_64);
+            compiler.visit(prog);
+            compiler.stdout_vector();
     } else {
         for(;;){
                 std::string input_line;
@@ -188,11 +189,9 @@ int main(int argc, char* argv[]) {
 
                     //std::cout << "====================================" << std::endl;
 
-                    /* Debugger AST */
-                    //if (verbose_flag) {
-                        core::visitor::ASTVisitor ast_visitor;
-                        ast_visitor.visit(prog);
-                    //}
+                    /* Debugger AST mapping */
+                    core::visitor::ASTVisitor ast_visitor;
+                    ast_visitor.visit(prog);
 
                     core::visitor::Interpreter interpreter(&global_scope);
                     interpreter.visit(prog);

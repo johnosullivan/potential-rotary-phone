@@ -36,7 +36,7 @@ void ASTVisitor::visit(parser::ASTBlockNode *block) {
 }
 
 void ASTVisitor::visit(parser::ASTFuncNode *func) {
-    LOG_F(INFO, "%s<fn type='%s'>", indentation().c_str(), type_str(func->type).c_str());
+    LOG_F(INFO, "%s<fn return_type='%s'>", indentation().c_str(), type_str(func->type).c_str());
 
     // Indent
     indentation_level++;
@@ -120,7 +120,7 @@ void ASTVisitor::visit(parser::ASTDeclarationNode *decl) {
 
     indentation_level++;
 
-    LOG_F(INFO, "%s<id type ='%s'>%s</id>", indentation().c_str(), type_str(decl -> type).c_str(), decl->identifier.c_str());
+    LOG_F(INFO, "%s<id type='%s'>%s</id>", indentation().c_str(), type_str(decl -> type).c_str(), decl->identifier.c_str());
 
     decl -> expr -> accept(this);
 

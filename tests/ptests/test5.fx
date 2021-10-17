@@ -1,5 +1,5 @@
-fn func1(n : int) {
-    print(n)
+fn func1() : int {
+    var x : int = 10
+    var y : int = 20
+    return x + y
 }
-
-print(func1(10))

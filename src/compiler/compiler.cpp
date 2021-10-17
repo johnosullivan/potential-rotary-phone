@@ -1,18 +1,63 @@
 #include <iostream>
+#include <cmath> 
 
 #include "compiler/compiler.h"
 
 using namespace core::compiler;
 using namespace core::visitor;
 
-Compiler::Compiler(COMPILER_ARCH_TYPE arch_type) {
+
+AsmLine::AsmLine(std::string _label, std::string _instruction, std::string _operand,std::string _comment) {
+    label = _label;
+    instruction = _instruction;
+    operand = _operand;
+    comment = _comment;
+}
+
+AsmLine::~AsmLine() {
+    
+}
+
+std::string AsmLine::getLabel() {
+    return label;
+}
+
+std::string AsmLine::getInstruction() {
+    return instruction;
+}
+
+std::string AsmLine::getOperand() {
+    return operand;
+}
+
+std::string AsmLine::getComment() {
+    return comment;
+}
+
+
+Compiler::Compiler(COMPILER_ARCH_TYPE arch_type) : indentation_num(0) {
     arch_type = arch_type;
     asm_source = "";
 
     scopes.push_back(new core::visitor::Scope());
 };
 
+/* helper function */
+std::string Compiler::indentation() {
+    std::string tabs;
+
+    for(unsigned int i = 0; i < indentation_num; i++) {
+        tabs += TAB;
+    }
+
+    return tabs;
+}
+
 void Compiler::visit(parser::ASTProgramNode *program) {
+    add_asm(AsmLine("", "global", "_main", ""));
+    add_asm(AsmLine("", "", "", ""));
+
+
     for(auto &statement : program -> statements) {
         statement -> accept(this);
     }
@@ -32,13 +77,13 @@ void Compiler::visit(parser::ASTBinaryExprNode *bin) {
     parser::TYPE l_type = current_expression_type;
     value_t l_value = current_expression_value;
 
-    std::cout << "l_value: " << l_value.i << std::endl;
+    //std::cout << "l_value: " << l_value.i << std::endl;
 
     bin -> right -> accept(this);
     parser::TYPE r_type = current_expression_type;
     value_t r_value = current_expression_value; 
 
-    std::cout << "r_value: " << r_value.i << std::endl;   
+    //std::cout << "r_value: " << r_value.i << std::endl;   
 }
 
 void Compiler::visit(parser::ASTAssignmentNode *assign) {
@@ -74,6 +119,121 @@ void Compiler::visit(parser::ASTIdentifierNode *id) {
 
     current_expression_type = scopes[i] -> type_of(id->identifier);
     current_expression_value = scopes[i] -> value_of(id->identifier);   
+}
+
+void Compiler::visit(parser::ASTStdOutNode* std) {
+    std -> expr -> accept(this);
+}
+
+void Compiler::visit(parser::ASTLiteralNode<float>* lit) {
+
+}
+
+void Compiler::visit(parser::ASTLiteralNode<bool>* lit) {
+
+}
+
+void Compiler::visit(parser::ASTLiteralNode<std::string>* lit) {
+
+}
+
+void Compiler::visit(parser::ASTFuncNode* fn) {
+    add_asm(AsmLine(fn->identifier + ":", "", "", ";"));
+    add_asm(AsmLine("", "push", "rbp", ";"));
+    add_asm(AsmLine("", "mov", "edx, DWORD [rbp-4]", ";"));
+
+    
+    // lists all the parameters
+    for(auto &param : fn -> parameters){
+
+    }
+
+    // Function body
+    fn -> block -> accept(this);
+}
+
+void Compiler::visit(parser::ASTBlockNode* block) {
+    // visit all the block statements
+    for(auto &statement : block -> statements) {
+        statement -> accept(this);
+    }
+}
+
+void Compiler::visit(parser::ASTReturnNode* ret) {
+    // Expression tags
+    ret -> expr -> accept(this);
+}
+
+void Compiler::visit(parser::ASTExprFuncCallNode* node) {
+    for(auto &param : node -> parameters) {
+        param->accept(this);
+    }
+}
+
+std::string Compiler::padding(int j) {
+    std::string tabs;
+
+    for(unsigned int i = 0; i < j; i++) {
+        tabs += " ";
+    }
+
+    return tabs;
+}
+
+void Compiler::add_asm(AsmLine a) {
+
+    if (a.getInstruction().length() > l1_padding_max) {
+        l1_padding_max = a.getInstruction().length();
+    }
+
+    if (a.getOperand().length() > l2_padding_max) {
+        l2_padding_max = a.getOperand().length();
+    }
+
+    asm_commands.push_back(a);
+}
+
+void Compiler::stdout_vector() {
+    std::cout << "" << std::endl;
+
+    std::cout << "l1_padding_max: " << l1_padding_max << std::endl;
+    std::cout << "l2_padding_max: " << l2_padding_max << std::endl;
+
+    int l1 = l1_padding_max + 1;
+    int l2 = l2_padding_max + 1;
+
+    for (auto &command : asm_commands)
+    { 
+        std::string temp = "";
+
+        temp = temp + command.getLabel() + TAB + TAB + command.getInstruction() + TAB + TAB;
+
+
+
+        int diffl1 = temp.length() - l1;
+        std::cout << "diffl1: " << diffl1 << std::endl;
+        if (diffl1 > 0) {
+            temp.erase(temp.length() - (1 + diffl1), diffl1);
+        } else if (diffl1 < 0) {
+            temp = temp + padding(std::abs(diffl1));
+        }
+
+        temp = temp + command.getOperand();
+
+        int diffl3 = temp.length() - (l1 + l2);
+        //std::cout << "diffl3: " << diffl3 << std::endl;
+
+        if (diffl3 > 0) {
+            temp.erase(temp.length() - (1 + diffl3), diffl3);
+        } else if (diffl3 < 0) {
+            temp = temp + padding(std::abs(diffl3));
+        }
+
+        temp = temp + padding(1) + command.getComment();
+
+        std::cout << temp << std::endl;
+    }
+    std::cout << "" << std::endl;
 }
 
 Compiler::~Compiler(){}

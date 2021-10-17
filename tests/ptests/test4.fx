@@ -1,6 +1,4 @@
-/*
-    A Example Function
-*/
+/* A Example Function */
 fn func1(n : int) : int {
     var y : int = n + 10
     return y + 5
