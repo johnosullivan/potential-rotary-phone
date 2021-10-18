@@ -24,13 +24,14 @@ namespace core::parser {
 namespace core::visitor {
 
     typedef struct VT {
-        VT() : i(0), f(0), b(0), s("") {};
+        VT() : i(0), f(0), b(0), s(""), bit(0) {};
         int i;
         float f;
         bool b;
         std::string s;
+        int bit;
     } value_t;
-    
+
     class Visitor {
         public:
             virtual void visit(parser::ASTProgramNode*) = 0;

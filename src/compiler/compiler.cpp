@@ -1,4 +1,6 @@
 #include <iostream>
+#include <sstream>  
+#include <string>   
 #include <cmath> 
 
 #include "compiler/compiler.h"
@@ -57,22 +59,29 @@ void Compiler::visit(parser::ASTProgramNode *program) {
     add_asm(AsmLine("", "global", "_main", ""));
     add_asm(AsmLine("", "", "", ""));
 
-
     for(auto &statement : program -> statements) {
         statement -> accept(this);
+        add_asm(AsmLine("", "", "", ""));
     }
-
-    add_asm(AsmLine("", "", "", ""));
-    add_asm(AsmLine("", "section", ".data", ""));
-    add_asm(AsmLine("message:", "db", "\"Hello World!\", 10", ""));
 }
 
 
 void Compiler::visit(parser::ASTLiteralNode<int> *lit) {
+    if (current_bit_stack == 0) {
+        current_bit_stack = 4;
+    } else {
+        current_bit_stack = current_bit_stack + 4;
+    }
+    
     value_t v;
     v.i = lit->val;
+    v.bit = current_bit_stack;
     current_expression_type = parser::INT;
     current_expression_value = std::move(v);
+
+    /*char asmbuffer[30];
+    sprintf(asmbuffer, "edx, DWORD [rbp-%d]", v.bit);
+    add_asm(AsmLine("", "mov", asmbuffer, ""));*/
 }
 
 void Compiler::visit(parser::ASTBinaryExprNode *bin) {
@@ -82,13 +91,20 @@ void Compiler::visit(parser::ASTBinaryExprNode *bin) {
     parser::TYPE l_type = current_expression_type;
     value_t l_value = current_expression_value;
 
-    //std::cout << "l_value: " << l_value.i << std::endl;
+    /*char asmbuffer1[30];
+    sprintf(asmbuffer1, "edx, DWORD [rbp-%d]", l_value.bit);
+    add_asm(AsmLine("", "mov", asmbuffer1, ""));
 
+    add_asm(AsmLine("", "add", "eax, edx", ""));*/
+    
     bin -> right -> accept(this);
     parser::TYPE r_type = current_expression_type;
-    value_t r_value = current_expression_value; 
+    value_t r_value = current_expression_value;
 
-    //std::cout << "r_value: " << r_value.i << std::endl;   
+    /*char asmbuffer2[30];
+    sprintf(asmbuffer2, "eax, DWORD [rbp-%d]", r_value.bit);
+    add_asm(AsmLine("", "mov", asmbuffer2, ""));*/
+
 }
 
 void Compiler::visit(parser::ASTAssignmentNode *assign) {
@@ -99,7 +115,7 @@ void Compiler::visit(parser::ASTAssignmentNode *assign) {
 
     switch(scopes[i]->type_of(assign->identifier)){
         case parser::INT:
-            scopes[i]->declare(assign->identifier, current_expression_value.i);
+            scopes[i]->declare(assign->identifier, current_expression_value.i, 0);
             break;
         default:
             break;
@@ -109,9 +125,17 @@ void Compiler::visit(parser::ASTAssignmentNode *assign) {
 void Compiler::visit(parser::ASTDeclarationNode *decl) { 
     decl -> expr -> accept(this);
 
+    /*std::cout << decl->identifier << std::endl;
+    std::cout << current_expression_value.i << std::endl;
+    std::cout << current_expression_value.bit << std::endl;*/
+
+    char asmbuffer[30];
+    sprintf(asmbuffer, "DWORD [rbp-%d], %d", current_expression_value.bit, current_expression_value.i);
+    add_asm(AsmLine("", "mov", asmbuffer, ""));
+    
     switch(decl -> type){
         case parser::INT:
-            scopes.back()->declare(decl->identifier, current_expression_value.i);
+            scopes.back()->declare(decl->identifier, current_expression_value.i, current_expression_value.bit);
             break;
         default:
             break;
@@ -124,6 +148,10 @@ void Compiler::visit(parser::ASTIdentifierNode *id) {
 
     current_expression_type = scopes[i] -> type_of(id->identifier);
     current_expression_value = scopes[i] -> value_of(id->identifier);   
+
+    /*char asmbuffer[30];
+    sprintf(asmbuffer, "edx, DWORD [rbp-%d]", current_expression_value.bit);
+    add_asm(AsmLine("", "mov", asmbuffer, ""));*/
 }
 
 void Compiler::visit(parser::ASTStdOutNode* std) {
@@ -143,9 +171,14 @@ void Compiler::visit(parser::ASTLiteralNode<std::string>* lit) {
 }
 
 void Compiler::visit(parser::ASTFuncNode* fn) {
-    add_asm(AsmLine(fn->identifier + ":", "", "", ""));
+    std::string id = fn->identifier;
+    if (fn->identifier == "main") {
+        id = "_" + id;
+    }  
+
+    add_asm(AsmLine(id + ":", "", "", ""));
     add_asm(AsmLine("", "push", "rbp", ""));
-    add_asm(AsmLine("", "mov", "edx, DWORD [rbp-4]", ""));
+    add_asm(AsmLine("", "mov", "rbp, rsp", ""));
 
     
     // lists all the parameters
@@ -167,6 +200,9 @@ void Compiler::visit(parser::ASTBlockNode* block) {
 void Compiler::visit(parser::ASTReturnNode* ret) {
     // Expression tags
     ret -> expr -> accept(this);
+
+    add_asm(AsmLine("", "pop", "rbp", ""));
+    add_asm(AsmLine("", "ret", "", ""));
 }
 
 void Compiler::visit(parser::ASTExprFuncCallNode* node) {
@@ -218,11 +254,6 @@ void Compiler::stdout_vector() {
     int l0 = l0_padding_max + 1;
     int l1 = l1_padding_max + 1;
     int l2 = l2_padding_max + 1;
-
-    /*std::cout << "l0_padding_max: " << l0_padding_max << std::endl;
-    std::cout << "l1_padding_max: " << l1_padding_max << std::endl;
-    std::cout << "l2_padding_max: " << l2_padding_max << std::endl;
-    std::cout << "" << std::endl;*/
 
     for (auto &command : asm_commands)
     { 

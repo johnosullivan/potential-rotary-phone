@@ -25,9 +25,10 @@ bool Scope::already_declared(std::string identifier, std::vector<parser::TYPE> s
     return false;
 }
 
-void Scope::declare(std::string identifier, int int_value) {
+void Scope::declare(std::string identifier, int int_value, int bit = 0) {
     value_t value;
     value.i = int_value;
+    value.bit = bit;
     variable_symbol_table[identifier] = std::make_pair(parser::INT, value);
 }
 

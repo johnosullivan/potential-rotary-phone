@@ -156,7 +156,7 @@ void ASTVisitor::visit(parser::ASTLiteralNode<float> *lit) {
 }
 
 void ASTVisitor::visit(parser::ASTBinaryExprNode *bin) {
-    LOG_F(INFO, "%s<bin> op='%s'>", indentation().c_str(), safe_op(bin->op).c_str());
+    LOG_F(INFO, "%s<bin op='%s'>", indentation().c_str(), safe_op(bin->op).c_str());
 
     // Indent
     indentation_level++;

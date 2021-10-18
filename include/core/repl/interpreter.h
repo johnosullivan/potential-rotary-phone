@@ -15,7 +15,7 @@ namespace core::visitor {
         bool already_declared(std::string);
         bool already_declared(std::string, std::vector<parser::TYPE>);
 
-        void declare(std::string, int);
+        void declare(std::string, int, int);
         void declare(std::string, float);
         void declare(std::string, std::string);
         void declare(std::string, bool);

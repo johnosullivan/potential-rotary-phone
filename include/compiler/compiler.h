@@ -68,6 +68,7 @@ namespace core::compiler {
             int l0_padding_max = 0;
             int l1_padding_max = 0;
             int l2_padding_max = 0;
+            int current_bit_stack = 0;
 
             // asm code for cli nasm
             std::string asm_source; 
