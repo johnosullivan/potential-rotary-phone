@@ -2,9 +2,11 @@
 #define COMPILER_H
 
 #include <fstream>
+#include <stack>
 
 #include "common/visitor.h"
 #include "core/parser/ast.h"
+#include "compiler/registers.h"
 #include "core/repl/interpreter.h"
 
 namespace core::compiler {
@@ -69,6 +71,12 @@ namespace core::compiler {
             int l1_padding_max = 0;
             int l2_padding_max = 0;
             int current_bit_stack = 0;
+
+            // type stack
+            std::stack<visitor::value_t> stack_t;
+
+            std::map<std::string, int> current_registers;
+            std::vector<std::string> current_preserved;
 
             // asm code for cli nasm
             std::string asm_source; 

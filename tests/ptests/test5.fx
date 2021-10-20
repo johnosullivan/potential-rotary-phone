@@ -1,9 +1,5 @@
 fn func1() : int {
-    var x : int = 54
-    var y : int = 20
-    var z : int = 10
-    var a : int = 90
-    return x + y + z + a
+    return 54 + 20 + 30
 }
 
 fn main() {

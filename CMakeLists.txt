@@ -22,5 +22,6 @@ add_executable(fx
 
         src/core/repl/interpreter.cpp
 
+        src/compiler/registers.cpp
         src/compiler/compiler.cpp
 )

@@ -36,10 +36,17 @@ std::string AsmLine::getComment() {
     return comment;
 }
 
-
 Compiler::Compiler(COMPILER_ARCH_TYPE arch_type) : indentation_num(0) {
     arch_type = arch_type;
     asm_source = "";
+
+    current_registers.clear();
+
+    Registers::setup_register(&current_registers, &current_preserved, arch_type);
+
+    for(auto it = current_registers.cbegin(); it != current_registers.cend(); ++it) {
+        //std::cout << it->first << " " << it->second << std::endl;
+    }
 
     scopes.push_back(new core::visitor::Scope());
 };
@@ -91,20 +98,43 @@ void Compiler::visit(parser::ASTBinaryExprNode *bin) {
     parser::TYPE l_type = current_expression_type;
     value_t l_value = current_expression_value;
 
-    /*char asmbuffer1[30];
-    sprintf(asmbuffer1, "edx, DWORD [rbp-%d]", l_value.bit);
-    add_asm(AsmLine("", "mov", asmbuffer1, ""));
-
-    add_asm(AsmLine("", "add", "eax, edx", ""));*/
-    
     bin -> right -> accept(this);
     parser::TYPE r_type = current_expression_type;
     value_t r_value = current_expression_value;
 
-    /*char asmbuffer2[30];
+    /*char asmbuffer1[30];
+    sprintf(asmbuffer1, "edx, DWORD [rbp-%d]", l_value.bit);
+    add_asm(AsmLine("", "mov", asmbuffer1, ""));
+
+    char asmbuffer2[30];
     sprintf(asmbuffer2, "eax, DWORD [rbp-%d]", r_value.bit);
     add_asm(AsmLine("", "mov", asmbuffer2, ""));*/
 
+    /*std::cout << "ASTBinaryExprNode" << std::endl;
+    std::cout << "l_value" << l_value.i << std::endl;
+    std::cout << "r_value" << r_value.i << std::endl;*/
+
+    /*if (l_value.bit != 0) {
+        char asmbuffer1[30];
+        sprintf(asmbuffer1, "edx, DWORD [rbp-%d]", l_value.bit);
+        add_asm(AsmLine("", "mov", asmbuffer1, ""));
+        stack_t.push(l_value);
+    }
+
+    if (r_value.bit != 0) {
+        stack_t.push(r_value);
+        char asmbuffer2[30];
+        sprintf(asmbuffer2, "eax, DWORD [rbp-%d]", r_value.bit);
+        add_asm(AsmLine("", "mov", asmbuffer2, ""));
+    } */  
+
+    //add_asm(AsmLine("", "add", "edx, eax", ""));
+    //std::cout << stack_t.size() << std::endl;
+
+    value_t v;
+    current_expression_type = parser::INT;
+    v.i = l_value.i + r_value.i;
+    current_expression_value = v;
 }
 
 void Compiler::visit(parser::ASTAssignmentNode *assign) {
@@ -201,6 +231,13 @@ void Compiler::visit(parser::ASTReturnNode* ret) {
     // Expression tags
     ret -> expr -> accept(this);
 
+    // Take node data to build asm.
+    if (current_expression_type == parser::INT) {
+        char asmbuffer[30];
+        sprintf(asmbuffer, "eax, %d", current_expression_value.i);
+        add_asm(AsmLine("", "mov", asmbuffer, ""));
+    }
+    
     add_asm(AsmLine("", "pop", "rbp", ""));
     add_asm(AsmLine("", "ret", "", ""));
 }
