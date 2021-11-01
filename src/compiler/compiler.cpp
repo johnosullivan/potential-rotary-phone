@@ -50,7 +50,7 @@ Compiler::Compiler(COMPILER_ARCH_TYPE arch_type) : indentation_num(0) {
 
     scopes.push_back(new core::visitor::Scope());
 };
-
+ 
 /* helper function */
 std::string Compiler::indentation() {
     std::string tabs;
