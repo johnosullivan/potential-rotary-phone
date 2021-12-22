@@ -9,7 +9,6 @@ include_directories(include)
 add_executable(fx
         # logging class
         src/lib/loguru.cpp
-
         # main program
         src/main.cpp
         # lexer fx
@@ -18,11 +17,8 @@ add_executable(fx
         # ast / parser
         src/core/parser/ast.cpp
         src/core/parser/astvisitor.cpp
-        
         src/core/parser/parser.cpp
-
         src/core/repl/interpreter.cpp
-
         src/compiler/registers.cpp
         src/compiler/compiler.cpp
 )
